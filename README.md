@@ -4,7 +4,7 @@ Python virus for getting various info about victims machine
 ## Usage
 
 <p align="left">
-  <img alt="issue" src="https://github.com/Josakko/DiscordRichPresence/blob/main/screenshot.png?raw=true" width="250px">
+  <img alt="issue" src="" width="600px">
 </p>
 
 
