@@ -3,7 +3,7 @@ Python virus for getting various info about victims machine
 
 ## Usage
 
-<p align="left">
+<p align="center">
   <img alt="issue" src="" width="600px">
 </p>
 
