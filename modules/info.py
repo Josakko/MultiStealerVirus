@@ -56,7 +56,7 @@ def network():
     mac = ':'.join(re.findall('..', '%012x' % uuid.getnode()))
     country, region, city, zip_code, isp = location(public_ip)
     
-    return f"\nPublic IP: {public_ip}\nPrivate IP: {private_ip}\nMAC Address: {mac}\nCountry: {country}\nRegion: {region}\nCity: {city}, {zip_code}\nISP: {isp}"
+    return f"\nPublic IP: {public_ip}\nPrivate IP: {private_ip}\nMAC: {mac}\nCountry: {country}\nRegion: {region}\nCity: {city}, {zip_code}\nISP: {isp}"
 
 
 #print(f"User data: {user()}\nSystem data: {system()}\nDisk data: {disk()}\nNetwork data: {network()}")
