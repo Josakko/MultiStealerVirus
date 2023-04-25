@@ -23,7 +23,7 @@ def system():
         hwid = "Unknown"
     cpu = wmi.WMI().Win32_Processor()[0].Name
     gpu = wmi.WMI().Win32_VideoController()[0].Name
-    ram = wmi.WMI().Win32_OperatingSystem()[0].TotalVisibleMemorySize#round(float(wmi.WMI().Win32_OperatingSystem()[0].TotalVisibleMemorySize) / 1048576, 0)
+    ram = wmi.WMI().Win32_OperatingSystem()[0].TotalVisibleMemorySize
     ram = round(float(ram) / 1048576)
     
     return f"\nCPU: {cpu}\nGPU: {gpu}\nRAM: {ram}GB\nHWID: {hwid}"
