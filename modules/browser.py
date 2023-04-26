@@ -29,7 +29,7 @@ def delete_file(file):
 #           f.close()
 #        return (ip_address, interval, port)
 #   except:
-#       pass
+#       return (None, None, None)
 #def send(file):
 #    try:
 #        with open(file, "r") as f:
