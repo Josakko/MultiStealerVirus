@@ -4,22 +4,6 @@ import getpass
 
 
 class StartUp:
-    def main(self):
-        #print("Enabled")
-
-        username = getpass.getuser()
-        app = r"C:\Path\to\your\program.exe"
-
-        batch = os.path.join(os.getenv('TEMP'), 'SystemBin-64bit.bat')
-        with open(batch, 'w') as f:
-            f.write(f'@echo off\nstart "" "{app}"')
-
-        task = "SystemBin-64bit"
-        os.system(f'schtasks /create /tn "{task}" /tr "{batch}" /sc "ONSTART" /ru "{username}"')
-        
-        
-        
-    
     def create_batch(self):
         with open(f"{self.dir}/run.bat", "w") as f:
             f.write("@echo off")
