@@ -3,8 +3,8 @@ import shutil
 import base64
 import json
 import os
-import requests
-import threading
+#import requests
+#import threading
 from Crypto.Cipher import AES
 import win32crypt
 import sys
