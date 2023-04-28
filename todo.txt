@@ -1,0 +1,3 @@
+https://discord.com/api/webhooks/ID/TOKEN  <== discord webhook
+False  <== Keylogger on/off (this module is still in WIP and any data that is logged using it wont be sent)
+False  <== Put the virus to startup reg value so that virus starts on every boot
