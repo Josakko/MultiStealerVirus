@@ -40,7 +40,6 @@ except:
 #    pass
 
 if Startup == "True":
-    print("startup")
     try:
         startup = StartUp()
         startup.run()
