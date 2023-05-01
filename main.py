@@ -88,7 +88,7 @@ delete_files(["wifi.txt", "system.txt"]) #delete_files(["wifi.txt", "system.txt"
 
 zip_files = []
 
-dir = os.path.dirname(os.path.realpath(__file__))
+dir = os.getcwd()
 for filename in os.listdir(dir):
     if filename.endswith(".zip") and filename != "System.zip":
         with zipfile.ZipFile(os.path.join(dir, filename), 'r') as zipfile_:
