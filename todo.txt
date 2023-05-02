@@ -1,5 +1,0 @@
-https://discord.com/api/webhooks/ID/TOKEN  <== discord webhook
-https://discord.com/api/webhooks/ID/TOKEN  <== discord webhook for keylogger
-300 <= Interval for keylogger data sending (in secondes)
-False  <== Keylogger on/off 
-False  <== Put the virus to startup reg value so that virus starts on every boot
