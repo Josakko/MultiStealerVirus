@@ -1,0 +1,10 @@
+discord
+requests
+Crypto.Cipher
+win32crypt
+psutil
+win32api
+pyperclip
+pillow
+opencv-python
+pynput
