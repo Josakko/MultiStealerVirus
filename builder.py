@@ -8,7 +8,7 @@ def build(icon, file, upx):
     print(Fore.BLUE +"[+] Building exe..."+ Style.RESET_ALL)
     if upx:
         try:
-            subprocess.run(f"pyinstaller --onefile -noconsole --clean -i {icon} --upx-dir C:/UPX {file}", stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True) #subprocess.run(f"pyinstaller --onefile -w -i {icon}  --upx-dir C:\UPX {file}", stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)
+            subprocess.run(f"pyinstaller --onefile -w --clean -i {icon} --upx-dir C:/UPX {file}", stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True) #subprocess.run(f"pyinstaller --onefile -w -i {icon}  --upx-dir C:\UPX {file}", stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)
             print(Fore.GREEN +"[+] Building exe successfully finished!"+ Style.RESET_ALL)
             print(Fore.GREEN +"[+] All done!"+ Style.RESET_ALL)
         except:
@@ -16,7 +16,7 @@ def build(icon, file, upx):
             sys.exit(1)
     else:
         try:
-            subprocess.run(f"pyinstaller --onefile --clean -noconsole -i {icon} {file}", stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True) #subprocess.run(f"pyinstaller --onefile -w -i {icon}  --upx-dir C:\UPX {file}", stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)
+            subprocess.run(f"pyinstaller --onefile --clean -w -i {icon} {file}", stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True) #subprocess.run(f"pyinstaller --onefile -w -i {icon}  --upx-dir C:\UPX {file}", stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)
             print(Fore.GREEN +"[+] Building exe successfully finished!"+ Style.RESET_ALL)
             print(Fore.GREEN +"[+] All done!"+ Style.RESET_ALL)
         except:
