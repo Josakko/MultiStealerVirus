@@ -2,7 +2,7 @@ discord
 requests
 Crypto.Cipher
 psutil
-win32api
+pywin32
 pyperclip
 pillow
 opencv-python
