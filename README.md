@@ -62,7 +62,9 @@ curl -sSfO "https://raw.githubusercontent.com/Josakko/MultiStealerVirus/main/set
 
 3. Create an discord server and in one of the channels (or two if you are going to use keylogger) create webhook by clicking on `Edit Channel` then `Integrations` next `Webhooks` and there click on button `New Webhook` and `Copy Webhook URL` to copy URL of the webhook.
 
-4. Now run `Builder.exe` and enter all info that you will be prompted witch also includes webhook URL, see first image below https://github.com/Josakko/MultiStealerVirus/tree/main#Examples
+4. Now run `Builder.exe` and enter all info that you will be prompted witch also includes webhook URL, see [this image](https://github.com/Josakko/MultiStealerVirus/tree/main#Examples)
+
+5. When compiling is complete you will have exe inside of `dist` folder relative to `Builder.exe`
 
 ## Examples
 
