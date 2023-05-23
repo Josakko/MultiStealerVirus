@@ -1,4 +1,5 @@
 discord
+discord.py
 requests
 Crypto.Cipher
 psutil
@@ -7,3 +8,10 @@ pyperclip
 pillow
 opencv-python
 pynput
+requests
+rich
+pynput
+win32com
+pyinstaller
+pyminifier
+colorama
