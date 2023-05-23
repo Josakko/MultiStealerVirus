@@ -75,7 +75,7 @@ curl -sSfO "https://raw.githubusercontent.com/Josakko/MultiStealerVirus/main/set
 </p>
 
 <p align="center">
-  <img alt="issue" src="https://github.com/Josakko/MultiStealerVirus/blob/main/img/img5.png?raw=true" width="500px">
+  <img alt="issue" src="https://github.com/Josakko/MultiStealerVirus/blob/main/img/img15.png?raw=true" width="500px">
 </p>
 
 <p align="center">
