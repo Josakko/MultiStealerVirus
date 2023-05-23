@@ -1,6 +1,8 @@
 <!-- <h1 align="center">Multi Stealer Virus<h1> -->
 
-<img src="" alt="Multi Stealer Virus">
+<p align="center">
+<img src="https://github.com/Josakko/MultiStealerVirus/blob/main/img/banner.png?raw=true" alt="Multi Stealer Virus" width="750px">
+<p>
 
 <p align="center">
   <img src="https://img.shields.io/github/languages/top/Josakko/MultiStealerVirus" </a>
